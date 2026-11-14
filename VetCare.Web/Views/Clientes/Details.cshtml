@@ -1,0 +1,44 @@
+@model VetCare.Web.Models.Cliente
+@{
+    ViewData["Title"] = "Detalle del cliente";
+}
+
+<h1>Detalle del cliente</h1>
+<hr />
+<dl class="row">
+    <dt class="col-sm-3">Cédula</dt>
+    <dd class="col-sm-9">@Model.Cedula</dd>
+    <dt class="col-sm-3">Nombre</dt>
+    <dd class="col-sm-9">@Model.Nombre @Model.Apellidos</dd>
+    <dt class="col-sm-3">Teléfono</dt>
+    <dd class="col-sm-9">@Model.Telefono</dd>
+    <dt class="col-sm-3">Correo</dt>
+    <dd class="col-sm-9">@Model.Correo</dd>
+    <dt class="col-sm-3">Dirección</dt>
+    <dd class="col-sm-9">@Model.Direccion</dd>
+    <dt class="col-sm-3">Fecha de registro</dt>
+    <dd class="col-sm-9">@Html.DisplayFor(m => m.FechaRegistro)</dd>
+</dl>
+
+<h4>Mascotas</h4>
+@if (!Model.Mascotas.Any())
+{
+    <p>Sin mascotas registradas</p>
+}
+else
+{
+    <ul>
+        @foreach (var m in Model.Mascotas)
+        {
+            <li>@m.Nombre</li>
+        }
+    </ul>
+}
+
+<div>
+    @if (User.IsInRole("Administrador") || User.IsInRole("Recepcionista"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.ClienteId" class="btn btn-secondary">Editar</a>
+    }
+    <a asp-action="Index" class="btn btn-outline-primary">Volver</a>
+</div>

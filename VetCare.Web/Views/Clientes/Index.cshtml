@@ -1,0 +1,78 @@
+@model IEnumerable<VetCare.Web.Models.Cliente>
+@{
+    ViewData["Title"] = "Clientes";
+    int pagina = ViewBag.Pagina;
+    int totalPaginas = ViewBag.TotalPaginas;
+    bool puedeEditar = User.IsInRole("Administrador") || User.IsInRole("Recepcionista");
+    bool esAdmin = User.IsInRole("Administrador");
+}
+
+<h1>Clientes</h1>
+
+@if (puedeEditar)
+{
+    <p><a asp-action="Create" class="btn btn-success">Nuevo cliente</a></p>
+}
+
+<form asp-action="Index" method="get" class="row g-2 mb-3">
+    <div class="col-auto">
+        <input name="buscar" value="@ViewBag.Buscar" class="form-control" placeholder="Nombre o cédula" />
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-primary">Buscar</button>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <p>No se encontraron clientes</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Cédula</th>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Teléfono</th>
+                <th>Correo</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Cedula</td>
+                    <td>@item.Nombre</td>
+                    <td>@item.Apellidos</td>
+                    <td>@item.Telefono</td>
+                    <td>@item.Correo</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.ClienteId" class="btn btn-sm btn-outline-primary">Detalle</a>
+                        @if (puedeEditar)
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.ClienteId" class="btn btn-sm btn-outline-secondary">Editar</a>
+                        }
+                        @if (esAdmin)
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.ClienteId" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<nav>
+    <ul class="pagination">
+        @for (var p = 1; p <= totalPaginas; p++)
+        {
+            <li class="page-item @(p == pagina ? "active" : "")">
+                <a class="page-link" asp-action="Index" asp-route-pagina="@p" asp-route-buscar="@ViewBag.Buscar">@p</a>
+            </li>
+        }
+    </ul>
+</nav>
