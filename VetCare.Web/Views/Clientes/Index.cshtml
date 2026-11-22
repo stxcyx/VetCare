@@ -7,72 +7,83 @@
     bool esAdmin = User.IsInRole("Administrador");
 }
 
-<h1>Clientes</h1>
-
-@if (puedeEditar)
-{
-    <p><a asp-action="Create" class="btn btn-success">Nuevo cliente</a></p>
-}
-
-<form asp-action="Index" method="get" class="row g-2 mb-3">
-    <div class="col-auto">
-        <input name="buscar" value="@ViewBag.Buscar" class="form-control" placeholder="Nombre o cédula" />
+<div class="vc-encabezado">
+    <div>
+        <p class="vc-ruta">Gestión clínica / Clientes</p>
+        <h1>Clientes</h1>
+        <p class="vc-subtitulo">Registro y administración de propietarios de mascotas</p>
     </div>
-    <div class="col-auto">
-        <button class="btn btn-primary">Buscar</button>
-    </div>
-</form>
+    @if (puedeEditar)
+    {
+        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nuevo registro</a>
+    }
+</div>
 
-@if (!Model.Any())
+<div class="vc-tabla-card">
+    <form asp-action="Index" method="get" class="vc-filtros">
+        <div class="vc-filtro-busqueda">
+            <i class="bi bi-search"></i>
+            <input name="buscar" value="@ViewBag.Buscar" placeholder="Buscar en clientes..." />
+        </div>
+        <button type="submit" class="vc-filtro-boton">Buscar</button>
+    </form>
+
+    @if (!Model.Any())
+    {
+        <p class="vc-vacio">No se encontraron clientes</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table vc-tabla mb-0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cédula</th>
+                        <th>Nombre completo</th>
+                        <th>Teléfono</th>
+                        <th>Correo</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in Model)
+                    {
+                        <tr>
+                            <td>@c.ClienteId</td>
+                            <td>@c.Cedula</td>
+                            <td><a asp-action="Details" asp-route-id="@c.ClienteId" class="vc-link-fila">@c.Nombre @c.Apellidos</a></td>
+                            <td>@c.Telefono</td>
+                            <td>@c.Correo</td>
+                            <td class="text-center text-nowrap">
+                                <a asp-action="Details" asp-route-id="@c.ClienteId" class="vc-pill vc-pill-ver">Ver</a>
+                                @if (puedeEditar)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@c.ClienteId" class="vc-pill vc-pill-editar">Editar</a>
+                                }
+                                @if (esAdmin)
+                                {
+                                    <a asp-action="Delete" asp-route-id="@c.ClienteId" class="vc-pill vc-pill-eliminar">Eliminar</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@if (totalPaginas > 1)
 {
-    <p>No se encontraron clientes</p>
-}
-else
-{
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Cédula</th>
-                <th>Nombre</th>
-                <th>Apellidos</th>
-                <th>Teléfono</th>
-                <th>Correo</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
+    <nav>
+        <ul class="pagination">
+            @for (var p = 1; p <= totalPaginas; p++)
             {
-                <tr>
-                    <td>@item.Cedula</td>
-                    <td>@item.Nombre</td>
-                    <td>@item.Apellidos</td>
-                    <td>@item.Telefono</td>
-                    <td>@item.Correo</td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@item.ClienteId" class="btn btn-sm btn-outline-primary">Detalle</a>
-                        @if (puedeEditar)
-                        {
-                            <a asp-action="Edit" asp-route-id="@item.ClienteId" class="btn btn-sm btn-outline-secondary">Editar</a>
-                        }
-                        @if (esAdmin)
-                        {
-                            <a asp-action="Delete" asp-route-id="@item.ClienteId" class="btn btn-sm btn-outline-danger">Eliminar</a>
-                        }
-                    </td>
-                </tr>
+                <li class="page-item @(p == pagina ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-pagina="@p" asp-route-buscar="@ViewBag.Buscar">@p</a>
+                </li>
             }
-        </tbody>
-    </table>
+        </ul>
+    </nav>
 }
-
-<nav>
-    <ul class="pagination">
-        @for (var p = 1; p <= totalPaginas; p++)
-        {
-            <li class="page-item @(p == pagina ? "active" : "")">
-                <a class="page-link" asp-action="Index" asp-route-pagina="@p" asp-route-buscar="@ViewBag.Buscar">@p</a>
-            </li>
-        }
-    </ul>
-</nav>

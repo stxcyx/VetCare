@@ -1,63 +1,127 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using VetCare.DA
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var autenticado = User.Identity?.IsAuthenticated == true;
+    var esAdmin = User.IsInRole("Administrador");
+    string nombre = "", rol = "", iniciales = "";
+
+    if (autenticado)
+    {
+        // HU-01 CA-01: la barra muestra el nombre y el rol del usuario
+        var usuario = await UserManager.GetUserAsync(User);
+        nombre = usuario?.NombreCompleto ?? User.Identity?.Name ?? "";
+        rol = esAdmin ? "Administrador" : User.IsInRole("Recepcionista") ? "Recepcionista" : "Veterinario";
+        iniciales = string.Concat(nombre.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+            .Where(p => !p.EndsWith('.'))          // ignora títulos como "Dra."
+            .Take(2)
+            .Select(p => char.ToUpper(p[0])));
+    }
+}
+@functions {
+    // Marca en el menú el módulo que se está viendo
+    string Activo(string controlador) =>
+        string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), controlador,
+                      StringComparison.OrdinalIgnoreCase) ? "activo" : "";
+}
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - VetCare</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,600;1,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/VetCare.Web.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">VetCare</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Clientes" asp-action="Index">Clientes</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Mascotas" asp-action="Index">Mascotas</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Veterinarios" asp-action="Index">Veterinarios</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Citas" asp-action="Index">Citas</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Productos" asp-action="Index">Inventario</a></li>
-                            @if (User.IsInRole("Administrador"))
-                            {
-                                <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Usuarios" asp-action="Index">Usuarios</a></li>
-                                <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
-                            }
-                        }
-                    </ul>
-                    <partial name="_LoginPartial" />
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <div class="container">
-        <main role="main" class="pb-3">
-            @if (TempData["Exito"] is string exito)
-            {
-                <div class="alert alert-success">@exito</div>
-            }
-            @if (TempData["Error"] is string error)
-            {
-                <div class="alert alert-danger">@error</div>
-            }
+    @if (!autenticado)
+    {
+        <main class="vc-sin-sesion">
             @RenderBody()
         </main>
-    </div>
+    }
+    else
+    {
+        <div class="vc-app">
+            <aside class="vc-sidebar">
+                <a class="vc-logo" asp-area="" asp-controller="Home" asp-action="Index">
+                    <span class="vc-logo-icono">🐾</span>
+                    <span class="vc-logo-texto"><strong>VetCare</strong><small>Sistema veterinario</small></span>
+                </a>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - VetCare
+                <nav class="vc-menu">
+                    @if (esAdmin)
+                    {
+                        <a class="vc-menu-item @Activo("Dashboard")" asp-area="" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-house-door-fill"></i> Dashboard</a>
+                    }
+                    <a class="vc-menu-item @Activo("Clientes")" asp-area="" asp-controller="Clientes" asp-action="Index"><i class="bi bi-people-fill"></i> Clientes</a>
+                    <a class="vc-menu-item @Activo("Mascotas")" asp-area="" asp-controller="Mascotas" asp-action="Index"><span class="vc-menu-emoji">🐾</span> Mascotas</a>
+                    <a class="vc-menu-item @Activo("Veterinarios")" asp-area="" asp-controller="Veterinarios" asp-action="Index"><i class="bi bi-heart-pulse"></i> Veterinarios</a>
+                    <a class="vc-menu-item @Activo("Citas")" asp-area="" asp-controller="Citas" asp-action="Index"><i class="bi bi-calendar-check"></i> Citas</a>
+                    <a class="vc-menu-item @Activo("Productos")" asp-area="" asp-controller="Productos" asp-action="Index"><i class="bi bi-box-seam"></i> Inventario</a>
+                    @if (esAdmin)
+                    {
+                        <a class="vc-menu-item @Activo("Reportes")" asp-area="" asp-controller="Reportes" asp-action="Index"><i class="bi bi-bar-chart-line"></i> Reportes</a>
+                        <a class="vc-menu-item @Activo("Usuarios")" asp-area="" asp-controller="Usuarios" asp-action="Index"><i class="bi bi-shield-lock"></i> Roles</a>
+                    }
+                </nav>
+
+                <form class="vc-salir" method="post" asp-area="Identity" asp-page="/Account/Logout"
+                      asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <button type="submit"><i class="bi bi-box-arrow-right"></i> Cerrar sesión</button>
+                </form>
+            </aside>
+
+            <div class="vc-principal">
+                <header class="vc-topbar">
+                    <button type="button" class="vc-hamburguesa" id="vcMenuToggle" aria-label="Mostrar u ocultar el menú">
+                        <i class="bi bi-list"></i>
+                    </button>
+
+                    <form class="vc-busqueda-global" method="get" asp-area="" asp-controller="Clientes" asp-action="Index">
+                        <i class="bi bi-search"></i>
+                        <input name="buscar" placeholder="Buscar clientes por nombre o cédula" />
+                    </form>
+
+                    <div class="vc-usuario">
+                        <i class="bi bi-bell vc-campana"></i>
+                        <div class="dropdown">
+                            <button type="button" class="vc-usuario-boton" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="vc-avatar">@iniciales</span>
+                                <span class="vc-usuario-datos"><strong>@nombre</strong><small>@rol</small></span>
+                                <i class="bi bi-chevron-down"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><span class="dropdown-item-text small text-muted">@User.Identity?.Name</span></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li>
+                                    <form method="post" asp-area="Identity" asp-page="/Account/Logout"
+                                          asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                        <button type="submit" class="dropdown-item"><i class="bi bi-box-arrow-right"></i> Cerrar sesión</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </header>
+
+                <main class="vc-contenido">
+                    @if (TempData["Exito"] is string exito)
+                    {
+                        <div class="alert alert-success">@exito</div>
+                    }
+                    @if (TempData["Error"] is string error)
+                    {
+                        <div class="alert alert-danger">@error</div>
+                    }
+                    @RenderBody()
+                </main>
+            </div>
         </div>
-    </footer>
+    }
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

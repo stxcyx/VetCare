@@ -1,0 +1,25 @@
+﻿@model Mascota
+@{
+    ViewData["Title"] = "Eliminar mascota";
+}
+
+<h1>Eliminar mascota</h1>
+<h4 class="text-danger">¿Seguro que deseas eliminar a @Model.Nombre?</h4>
+<p class="text-muted">Si la mascota tiene citas registradas no se borra: queda Inactiva y conserva su historial.</p>
+<hr />
+<dl class="row">
+    <dt class="col-sm-3">Dueño</dt>
+    <dd class="col-sm-9">@Model.Cliente?.Nombre @Model.Cliente?.Apellidos</dd>
+    <dt class="col-sm-3">Especie</dt>
+    <dd class="col-sm-9">@Model.Especie?.Nombre</dd>
+    <dt class="col-sm-3">Raza</dt>
+    <dd class="col-sm-9">@Model.Raza</dd>
+    <dt class="col-sm-3">Citas registradas</dt>
+    <dd class="col-sm-9">@Model.Citas.Count</dd>
+</dl>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="MascotaId" />
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

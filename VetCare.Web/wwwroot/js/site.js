@@ -1,4 +1,5 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
+﻿// oculta el menú lateral en pantallas grandes y lo muestra en pantallas pequeñas
+document.getElementById('vcMenuToggle')?.addEventListener('click', () => {
+    const clase = window.innerWidth < 992 ? 'vc-menu-abierto' : 'vc-menu-cerrado';
+    document.body.classList.toggle(clase);
+});

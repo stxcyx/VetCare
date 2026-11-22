@@ -23,6 +23,9 @@ builder.Services.AddIdentityCore<ApplicationUser>()
 builder.Services.AddScoped<IClienteDA, ClienteDA>();
 builder.Services.AddScoped<IClienteReglas, ClienteReglas>();
 builder.Services.AddScoped<IClienteFlujo, ClienteFlujo>();
+builder.Services.AddScoped<IMascotaDA, MascotaDA>();
+builder.Services.AddScoped<IMascotaReglas, MascotaReglas>();
+builder.Services.AddScoped<IMascotaFlujo, MascotaFlujo>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);

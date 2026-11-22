@@ -30,15 +30,11 @@ else
     <ul>
         @foreach (var m in Model.Mascotas)
         {
-            <li>@m.Nombre</li>
+            <li><a asp-controller="Mascotas" asp-action="Details" asp-route-id="@m.MascotaId">@m.Nombre</a></li>
         }
     </ul>
 }
-
-<div>
-    @if (User.IsInRole("Administrador") || User.IsInRole("Recepcionista"))
-    {
-        <a asp-action="Edit" asp-route-id="@Model.ClienteId" class="btn btn-secondary">Editar</a>
-    }
-    <a asp-action="Index" class="btn btn-outline-primary">Volver</a>
-</div>
+@if (User.IsInRole("Administrador") || User.IsInRole("Recepcionista"))
+{
+    <p><a asp-controller="Mascotas" asp-action="Create" asp-route-clienteId="@Model.ClienteId" class="btn btn-sm btn-success">Agregar mascota</a></p>
+}

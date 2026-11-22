@@ -1,0 +1,23 @@
+﻿@model Mascota
+@{
+    ViewData["Title"] = "Editar mascota";
+}
+
+<h1>Editar mascota</h1>
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="MascotaId" />
+            <partial name="_Formulario" model="Model" />
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            <a asp-action="Details" asp-route-id="@Model.MascotaId" class="btn btn-secondary">Volver</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
