@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace VetCare.Web.Models;
+namespace VetCare.Abstracciones.Modelos;
 
 public class Especie
 {

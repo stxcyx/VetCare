@@ -1,3 +1,8 @@
 <Solution>
+  <Project Path="VetCare.Abstracciones/VetCare.Abstracciones.csproj" />
+  <Project Path="VetCare.API/VetCare.API.csproj" />
+  <Project Path="VetCare.DA/VetCare.DA.csproj" />
+  <Project Path="VetCare.Flujo/VetCare.Flujo.csproj" />
+  <Project Path="VetCare.Reglas/VetCare.Reglas.csproj" />
   <Project Path="VetCare.Web/VetCare.Web.csproj" />
 </Solution>

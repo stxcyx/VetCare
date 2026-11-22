@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using VetCare.Web.Models;
+using VetCare.Abstracciones.Modelos;
 
-namespace VetCare.Web.Data;
+namespace VetCare.DA;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
@@ -20,10 +20,15 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         base.OnModelCreating(b);
 
+        // Relaciones con Usuario (Identity). Los modelos solo guardan UsuarioId,
+        // así Abstracciones no depende de Identity.
+        b.Entity<Cliente>().HasOne<ApplicationUser>().WithMany().HasForeignKey(c => c.UsuarioId);   // 0..1 a N
+        b.Entity<Veterinario>().HasOne<ApplicationUser>().WithMany().HasForeignKey(v => v.UsuarioId);
+
         b.Entity<Cliente>().HasIndex(c => c.Cedula).IsUnique();
-        b.Entity<Cliente>().HasIndex(c => c.UsuarioId).IsUnique();
+        b.Entity<Cliente>().HasIndex(c => c.UsuarioId);   // NO único: un usuario registra muchos clientes
         b.Entity<Veterinario>().HasIndex(v => v.CodigoColegiado).IsUnique();
-        b.Entity<Veterinario>().HasIndex(v => v.UsuarioId).IsUnique();
+        b.Entity<Veterinario>().HasIndex(v => v.UsuarioId).IsUnique();   // una cuenta por veterinario
         b.Entity<Producto>().HasIndex(p => new { p.Nombre, p.Categoria }).IsUnique();
 
         b.Entity<CitaProducto>().HasKey(cp => new { cp.CitaId, cp.ProductoId });
