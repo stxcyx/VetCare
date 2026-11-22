@@ -31,6 +31,19 @@ public class Mascota : IValidatableObject
 
     public bool Activa { get; set; } = true;
 
+    // HU-09 CA-02: edad en años y meses. No se guarda en la base 
+    public string Edad
+    {
+        get
+        {
+            var hoy = DateTime.Today;
+            var meses = (hoy.Year - FechaNacimiento.Year) * 12 + hoy.Month - FechaNacimiento.Month;
+            if (hoy.Day < FechaNacimiento.Day) meses--;
+            if (meses < 0) meses = 0;
+            return $"{meses / 12} años y {meses % 12} meses";
+        }
+    }
+
     public ICollection<Cita> Citas { get; set; } = new List<Cita>();
 
     public IEnumerable<ValidationResult> Validate(ValidationContext context)

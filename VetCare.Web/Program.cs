@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -7,6 +8,12 @@ using VetCare.DA;
 using VetCare.Web.Proxies;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var cultura = new CultureInfo("es-CR");
+cultura.NumberFormat.NumberDecimalSeparator = ".";
+cultura.NumberFormat.NumberGroupSeparator = ",";
+CultureInfo.DefaultThreadCurrentCulture = cultura;
+CultureInfo.DefaultThreadCurrentUICulture = cultura;
 
 // La Web usa la base solo para Identity (inicio de sesión y roles).
 // Los datos de los módulos llegan por la API.
@@ -24,6 +31,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 var apiUrl = builder.Configuration["ApiUrl"]
     ?? throw new InvalidOperationException("Falta 'ApiUrl' en appsettings.json.");
 builder.Services.AddHttpClient<ClienteProxy>(c => c.BaseAddress = new Uri(apiUrl));
+builder.Services.AddHttpClient<MascotaProxy>(c => c.BaseAddress = new Uri(apiUrl));
 
 // HU-03: todas las páginas exigen sesión y uno de los tres roles
 builder.Services.AddControllersWithViews(options =>

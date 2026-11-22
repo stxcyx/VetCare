@@ -1,0 +1,50 @@
+﻿@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Iniciar sesión";
+    Layout = "/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<div class="vc-login-tarjeta">
+    <div class="text-center mb-4">
+        <div class="vc-login-huella">🐾</div>
+        <h1 class="vc-login-marca">Vet<span>Care</span></h1>
+        <p class="vc-login-sub">Sistema de gestión veterinaria</p>
+    </div>
+
+    @if (Model.MensajeError is not null)
+    {
+        <div class="alert alert-danger py-2 small">@Model.MensajeError</div>
+    }
+
+    <form method="post">
+        <div class="mb-3">
+            <label asp-for="Input.Email" class="form-label">Correo electrónico</label>
+            <input asp-for="Input.Email" class="form-control" placeholder="ejemplo@correo.com" autocomplete="username" />
+            <span asp-validation-for="Input.Email" class="text-danger small"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Input.Password" class="form-label">Contraseña</label>
+            <input asp-for="Input.Password" class="form-control" placeholder="Tu contraseña" autocomplete="current-password" />
+            <span asp-validation-for="Input.Password" class="text-danger small"></span>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-3 small">
+            <div class="form-check">
+                <input asp-for="Input.RememberMe" class="form-check-input" />
+                <label asp-for="Input.RememberMe" class="form-check-label">Recordarme</label>
+            </div>
+            <span class="vc-login-link" title="Solicite al administrador que restablezca su contraseña">¿Olvidó su contraseña?</span>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 vc-login-boton">Iniciar sesión</button>
+    </form>
+
+    <div class="d-flex justify-content-between mt-4 small">
+        <span>¿No tienes cuenta?</span>
+        <span class="vc-login-link">Contacta al administrador</span>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+}

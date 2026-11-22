@@ -7,15 +7,10 @@ namespace VetCare.Web.Controllers;
 
 public class HomeController : Controller
 {
-    public IActionResult Index()
-    {
-        return View();
-    }
+    // La página de inicio es el listado de clientes
+    public IActionResult Index() => RedirectToAction("Index", "Clientes");
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
+    public IActionResult Privacy() => View();
 
     [AllowAnonymous]
     public IActionResult AccesoDenegado() => View();

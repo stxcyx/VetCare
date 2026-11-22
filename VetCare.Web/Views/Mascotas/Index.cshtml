@@ -1,0 +1,90 @@
+﻿@model IEnumerable<Mascota>
+@{
+    ViewData["Title"] = "Mascotas";
+    bool puedeEditar = User.IsInRole("Administrador") || User.IsInRole("Recepcionista");
+    bool esAdmin = User.IsInRole("Administrador");
+    var crc = CultureInfo.GetCultureInfo("es-CR");   // peso con coma: 24,5 kg
+}
+
+<div class="vc-encabezado">
+    <div>
+        <p class="vc-ruta">Gestión clínica / Mascotas</p>
+        <h1>Mascotas</h1>
+        <p class="vc-subtitulo">Expedientes y pacientes asociados a sus propietarios</p>
+    </div>
+    @if (puedeEditar)
+    {
+        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nuevo registro</a>
+    }
+</div>
+
+<div class="vc-tabla-card">
+    <form asp-action="Index" method="get" class="vc-filtros">
+        <div class="vc-filtro-busqueda">
+            <i class="bi bi-search"></i>
+            <input name="buscar" value="@ViewBag.Buscar" placeholder="Buscar mascota o dueño..." />
+        </div>
+        <select name="especieId" asp-items="ViewBag.Especies" class="vc-filtro-select" onchange="this.form.submit()">
+            <option value="">Todas las especies</option>
+        </select>
+        <button type="submit" class="vc-filtro-boton">Buscar</button>
+    </form>
+
+    @if (!Model.Any())
+    {
+        <p class="vc-vacio">No se encontraron mascotas</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table vc-tabla mb-0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Mascota</th>
+                        <th>Especie</th>
+                        <th>Raza</th>
+                        <th>Dueño</th>
+                        <th>Peso</th>
+                        <th>Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var m in Model)
+                    {
+                        <tr>
+                            <td>@m.MascotaId</td>
+                            <td><a asp-action="Details" asp-route-id="@m.MascotaId" class="vc-link-fila">@m.Nombre</a></td>
+                            <td>@m.Especie?.Nombre</td>
+                            <td>@m.Raza</td>
+                            <td>@m.Cliente?.Nombre @m.Cliente?.Apellidos</td>
+                            <td>@m.PesoKg.ToString("0.0", crc) kg</td>
+                            <td>
+                                @if (m.Activa)
+                                {
+                                    <span class="vc-estado vc-estado-activo">Activa</span>
+                                }
+                                else
+                                {
+                                    <span class="vc-estado vc-estado-inactivo">Inactiva</span>
+                                }
+                            </td>
+                            <td class="text-center text-nowrap">
+                                <a asp-action="Details" asp-route-id="@m.MascotaId" class="vc-pill vc-pill-ver">Ficha</a>
+                                @if (puedeEditar)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@m.MascotaId" class="vc-pill vc-pill-editar">Editar</a>
+                                }
+                                @if (esAdmin && m.Activa)
+                                {
+                                    <a asp-action="Delete" asp-route-id="@m.MascotaId" class="vc-pill vc-pill-eliminar">Eliminar</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
