@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using VetCare.Web.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using VetCare.Abstracciones.Modelos;
 
-namespace VetCare.Web.Data;
+namespace VetCare.DA;
 
 public static class SeedData
 {
@@ -74,7 +76,7 @@ public static class SeedData
 
         var v1 = new Veterinario
         {
-            Usuario = uMora,
+            UsuarioId = uMora.Id,
             CodigoColegiado = "VET-1001",
             Nombre = "Dra. Laura Mora",
             Especialidad = "Medicina general",
@@ -84,7 +86,7 @@ public static class SeedData
         };
         var v2 = new Veterinario
         {
-            Usuario = uPerez,
+            UsuarioId = uPerez.Id,
             CodigoColegiado = "VET-1002",
             Nombre = "Dr. José Pérez",
             Especialidad = "Cirugía",

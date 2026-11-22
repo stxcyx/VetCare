@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using VetCare.Web.Data;
 
-namespace VetCare.Web.Models;
+
+namespace VetCare.Abstracciones.Modelos;
 
 public class Veterinario : IValidatableObject
 {
@@ -9,7 +9,7 @@ public class Veterinario : IValidatableObject
 
     [Required(ErrorMessage = "Debe seleccionar una cuenta de usuario")]
     public string UsuarioId { get; set; } = string.Empty;
-    public ApplicationUser? Usuario { get; set; }
+
 
     [Required(ErrorMessage = "El código de colegiado es obligatorio"), StringLength(20)]
     public string CodigoColegiado { get; set; } = string.Empty;

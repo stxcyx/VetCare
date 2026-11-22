@@ -1,14 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using VetCare.Web.Data;
 
-namespace VetCare.Web.Models;
+
+namespace VetCare.Abstracciones.Modelos;
 
 public class Cliente
 {
     public int ClienteId { get; set; }
 
     public string? UsuarioId { get; set; }
-    public ApplicationUser? Usuario { get; set; }
+  
 
     [Required(ErrorMessage = "La cédula es obligatoria"), StringLength(15)]
     public string Cedula { get; set; } = string.Empty;

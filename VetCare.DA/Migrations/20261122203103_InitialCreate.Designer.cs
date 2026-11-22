@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using VetCare.Web.Data;
+using VetCare.DA;
 
 #nullable disable
 
-namespace VetCare.Web.Data.Migrations
+namespace VetCare.DA.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261122203103_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,12 +105,10 @@ namespace VetCare.Web.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -144,12 +145,10 @@ namespace VetCare.Web.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -159,7 +158,283 @@ namespace VetCare.Web.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("VetCare.Web.Data.ApplicationUser", b =>
+            modelBuilder.Entity("VetCare.Abstracciones.Modelos.Cita", b =>
+                {
+                    b.Property<int>("CitaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CitaId"));
+
+                    b.Property<string>("Diagnostico")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DuracionMin")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime>("FechaHora")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MascotaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Motivo")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("MotivoCancelacion")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Tratamiento")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("VeterinarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CitaId");
+
+                    b.HasIndex("MascotaId");
+
+                    b.HasIndex("VeterinarioId");
+
+                    b.ToTable("Citas");
+                });
+
+            modelBuilder.Entity("VetCare.Abstracciones.Modelos.CitaProducto", b =>
+                {
+                    b.Property<int>("CitaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
+
+                    b.HasKey("CitaId", "ProductoId");
+
+                    b.HasIndex("ProductoId");
+
+                    b.ToTable("CitaProductos");
+                });
+
+            modelBuilder.Entity("VetCare.Abstracciones.Modelos.Cliente", b =>
+                {
+                    b.Property<int>("ClienteId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClienteId"));
+
+                    b.Property<string>("Apellidos")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("Cedula")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<string>("Correo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Direccion")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime>("FechaRegistro")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UsuarioId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ClienteId");
+
+                    b.HasIndex("Cedula")
+                        .IsUnique();
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Clientes");
+                });
+
+            modelBuilder.Entity("VetCare.Abstracciones.Modelos.Especie", b =>
+                {
+                    b.Property<int>("EspecieId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EspecieId"));
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.HasKey("EspecieId");
+
+                    b.ToTable("Especies");
+                });
+
+            modelBuilder.Entity("VetCare.Abstracciones.Modelos.Mascota", b =>
+                {
+                    b.Property<int>("MascotaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MascotaId"));
+
+                    b.Property<bool>("Activa")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EspecieId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FechaNacimiento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<decimal>("PesoKg")
+                        .HasPrecision(4, 1)
+                        .HasColumnType("decimal(4,1)");
+
+                    b.Property<string>("Raza")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<string>("Sexo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MascotaId");
+
+                    b.HasIndex("ClienteId");
+
+                    b.HasIndex("EspecieId");
+
+                    b.ToTable("Mascotas");
+                });
+
+            modelBuilder.Entity("VetCare.Abstracciones.Modelos.Producto", b =>
+                {
+                    b.Property<int>("ProductoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductoId"));
+
+                    b.Property<bool>("Activo")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Categoria")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime?>("FechaVencimiento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<decimal>("Precio")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Stock")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StockMinimo")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductoId");
+
+                    b.HasIndex("Nombre", "Categoria")
+                        .IsUnique();
+
+                    b.ToTable("Productos");
+                });
+
+            modelBuilder.Entity("VetCare.Abstracciones.Modelos.Veterinario", b =>
+                {
+                    b.Property<int>("VeterinarioId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VeterinarioId"));
+
+                    b.Property<bool>("Activo")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("CodigoColegiado")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Especialidad")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<TimeSpan>("HoraFin")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan>("HoraInicio")
+                        .HasColumnType("time");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("VeterinarioId");
+
+                    b.HasIndex("CodigoColegiado")
+                        .IsUnique();
+
+                    b.HasIndex("UsuarioId")
+                        .IsUnique();
+
+                    b.ToTable("Veterinarios");
+                });
+
+            modelBuilder.Entity("VetCare.DA.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -229,284 +504,6 @@ namespace VetCare.Web.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("VetCare.Web.Models.Cita", b =>
-                {
-                    b.Property<int>("CitaId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CitaId"));
-
-                    b.Property<string>("Diagnostico")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DuracionMin")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Estado")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<DateTime>("FechaHora")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("MascotaId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Motivo")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("MotivoCancelacion")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Tratamiento")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("VeterinarioId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CitaId");
-
-                    b.HasIndex("MascotaId");
-
-                    b.HasIndex("VeterinarioId");
-
-                    b.ToTable("Citas");
-                });
-
-            modelBuilder.Entity("VetCare.Web.Models.CitaProducto", b =>
-                {
-                    b.Property<int>("CitaId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Cantidad")
-                        .HasColumnType("int");
-
-                    b.HasKey("CitaId", "ProductoId");
-
-                    b.HasIndex("ProductoId");
-
-                    b.ToTable("CitaProductos");
-                });
-
-            modelBuilder.Entity("VetCare.Web.Models.Cliente", b =>
-                {
-                    b.Property<int>("ClienteId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClienteId"));
-
-                    b.Property<string>("Apellidos")
-                        .IsRequired()
-                        .HasMaxLength(80)
-                        .HasColumnType("nvarchar(80)");
-
-                    b.Property<string>("Cedula")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
-
-                    b.Property<string>("Correo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Direccion")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime>("FechaRegistro")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
-
-                    b.Property<string>("Telefono")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UsuarioId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("ClienteId");
-
-                    b.HasIndex("Cedula")
-                        .IsUnique();
-
-                    b.HasIndex("UsuarioId")
-                        .IsUnique()
-                        .HasFilter("[UsuarioId] IS NOT NULL");
-
-                    b.ToTable("Clientes");
-                });
-
-            modelBuilder.Entity("VetCare.Web.Models.Especie", b =>
-                {
-                    b.Property<int>("EspecieId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EspecieId"));
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
-
-                    b.HasKey("EspecieId");
-
-                    b.ToTable("Especies");
-                });
-
-            modelBuilder.Entity("VetCare.Web.Models.Mascota", b =>
-                {
-                    b.Property<int>("MascotaId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MascotaId"));
-
-                    b.Property<bool>("Activa")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("ClienteId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EspecieId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("FechaNacimiento")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
-
-                    b.Property<decimal>("PesoKg")
-                        .HasPrecision(4, 1)
-                        .HasColumnType("decimal(4,1)");
-
-                    b.Property<string>("Raza")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
-
-                    b.Property<string>("Sexo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("MascotaId");
-
-                    b.HasIndex("ClienteId");
-
-                    b.HasIndex("EspecieId");
-
-                    b.ToTable("Mascotas");
-                });
-
-            modelBuilder.Entity("VetCare.Web.Models.Producto", b =>
-                {
-                    b.Property<int>("ProductoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductoId"));
-
-                    b.Property<bool>("Activo")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Categoria")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<DateTime?>("FechaVencimiento")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<decimal>("Precio")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("Stock")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StockMinimo")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProductoId");
-
-                    b.HasIndex("Nombre", "Categoria")
-                        .IsUnique();
-
-                    b.ToTable("Productos");
-                });
-
-            modelBuilder.Entity("VetCare.Web.Models.Veterinario", b =>
-                {
-                    b.Property<int>("VeterinarioId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VeterinarioId"));
-
-                    b.Property<bool>("Activo")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("CodigoColegiado")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("Especialidad")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
-
-                    b.Property<TimeSpan>("HoraFin")
-                        .HasColumnType("time");
-
-                    b.Property<TimeSpan>("HoraInicio")
-                        .HasColumnType("time");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Telefono")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UsuarioId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("VeterinarioId");
-
-                    b.HasIndex("CodigoColegiado")
-                        .IsUnique();
-
-                    b.HasIndex("UsuarioId")
-                        .IsUnique();
-
-                    b.ToTable("Veterinarios");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -518,7 +515,7 @@ namespace VetCare.Web.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("VetCare.Web.Data.ApplicationUser", null)
+                    b.HasOne("VetCare.DA.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -527,7 +524,7 @@ namespace VetCare.Web.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("VetCare.Web.Data.ApplicationUser", null)
+                    b.HasOne("VetCare.DA.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -542,7 +539,7 @@ namespace VetCare.Web.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("VetCare.Web.Data.ApplicationUser", null)
+                    b.HasOne("VetCare.DA.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -551,22 +548,22 @@ namespace VetCare.Web.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("VetCare.Web.Data.ApplicationUser", null)
+                    b.HasOne("VetCare.DA.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("VetCare.Web.Models.Cita", b =>
+            modelBuilder.Entity("VetCare.Abstracciones.Modelos.Cita", b =>
                 {
-                    b.HasOne("VetCare.Web.Models.Mascota", "Mascota")
+                    b.HasOne("VetCare.Abstracciones.Modelos.Mascota", "Mascota")
                         .WithMany("Citas")
                         .HasForeignKey("MascotaId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("VetCare.Web.Models.Veterinario", "Veterinario")
+                    b.HasOne("VetCare.Abstracciones.Modelos.Veterinario", "Veterinario")
                         .WithMany("Citas")
                         .HasForeignKey("VeterinarioId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -577,15 +574,15 @@ namespace VetCare.Web.Data.Migrations
                     b.Navigation("Veterinario");
                 });
 
-            modelBuilder.Entity("VetCare.Web.Models.CitaProducto", b =>
+            modelBuilder.Entity("VetCare.Abstracciones.Modelos.CitaProducto", b =>
                 {
-                    b.HasOne("VetCare.Web.Models.Cita", "Cita")
+                    b.HasOne("VetCare.Abstracciones.Modelos.Cita", "Cita")
                         .WithMany("Productos")
                         .HasForeignKey("CitaId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("VetCare.Web.Models.Producto", "Producto")
+                    b.HasOne("VetCare.Abstracciones.Modelos.Producto", "Producto")
                         .WithMany("CitaProductos")
                         .HasForeignKey("ProductoId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -596,25 +593,23 @@ namespace VetCare.Web.Data.Migrations
                     b.Navigation("Producto");
                 });
 
-            modelBuilder.Entity("VetCare.Web.Models.Cliente", b =>
+            modelBuilder.Entity("VetCare.Abstracciones.Modelos.Cliente", b =>
                 {
-                    b.HasOne("VetCare.Web.Data.ApplicationUser", "Usuario")
+                    b.HasOne("VetCare.DA.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("VetCare.Web.Models.Mascota", b =>
+            modelBuilder.Entity("VetCare.Abstracciones.Modelos.Mascota", b =>
                 {
-                    b.HasOne("VetCare.Web.Models.Cliente", "Cliente")
+                    b.HasOne("VetCare.Abstracciones.Modelos.Cliente", "Cliente")
                         .WithMany("Mascotas")
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("VetCare.Web.Models.Especie", "Especie")
+                    b.HasOne("VetCare.Abstracciones.Modelos.Especie", "Especie")
                         .WithMany("Mascotas")
                         .HasForeignKey("EspecieId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -625,43 +620,41 @@ namespace VetCare.Web.Data.Migrations
                     b.Navigation("Especie");
                 });
 
-            modelBuilder.Entity("VetCare.Web.Models.Veterinario", b =>
+            modelBuilder.Entity("VetCare.Abstracciones.Modelos.Veterinario", b =>
                 {
-                    b.HasOne("VetCare.Web.Data.ApplicationUser", "Usuario")
+                    b.HasOne("VetCare.DA.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("VetCare.Web.Models.Cita", b =>
+            modelBuilder.Entity("VetCare.Abstracciones.Modelos.Cita", b =>
                 {
                     b.Navigation("Productos");
                 });
 
-            modelBuilder.Entity("VetCare.Web.Models.Cliente", b =>
+            modelBuilder.Entity("VetCare.Abstracciones.Modelos.Cliente", b =>
                 {
                     b.Navigation("Mascotas");
                 });
 
-            modelBuilder.Entity("VetCare.Web.Models.Especie", b =>
+            modelBuilder.Entity("VetCare.Abstracciones.Modelos.Especie", b =>
                 {
                     b.Navigation("Mascotas");
                 });
 
-            modelBuilder.Entity("VetCare.Web.Models.Mascota", b =>
+            modelBuilder.Entity("VetCare.Abstracciones.Modelos.Mascota", b =>
                 {
                     b.Navigation("Citas");
                 });
 
-            modelBuilder.Entity("VetCare.Web.Models.Producto", b =>
+            modelBuilder.Entity("VetCare.Abstracciones.Modelos.Producto", b =>
                 {
                     b.Navigation("CitaProductos");
                 });
 
-            modelBuilder.Entity("VetCare.Web.Models.Veterinario", b =>
+            modelBuilder.Entity("VetCare.Abstracciones.Modelos.Veterinario", b =>
                 {
                     b.Navigation("Citas");
                 });

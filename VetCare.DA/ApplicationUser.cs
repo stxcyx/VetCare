@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
-namespace VetCare.Web.Data;
+namespace VetCare.DA;
 
 public class ApplicationUser : IdentityUser
 {

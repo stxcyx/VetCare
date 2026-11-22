@@ -1,15 +1,18 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using VetCare.Web.Data;
-using VetCare.Web.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
+using VetCare.DA;
+using VetCare.Web.Proxies;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+// La Web usa la base solo para Identity (inicio de sesión y roles).
+// Los datos de los módulos llegan por la API.
+var cadena = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Falta la cadena de conexión 'DefaultConnection'.");
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(cadena));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
@@ -17,7 +20,12 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-//(HU-03)
+// Clientes HTTP hacia la API (uno por módulo)
+var apiUrl = builder.Configuration["ApiUrl"]
+    ?? throw new InvalidOperationException("Falta 'ApiUrl' en appsettings.json.");
+builder.Services.AddHttpClient<ClienteProxy>(c => c.BaseAddress = new Uri(apiUrl));
+
+// HU-03: todas las páginas exigen sesión y uno de los tres roles
 builder.Services.AddControllersWithViews(options =>
     options.Filters.Add(new AuthorizeFilter(
         new AuthorizationPolicyBuilder()
@@ -30,7 +38,6 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -38,7 +45,6 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -58,11 +64,5 @@ app.MapControllerRoute(
 
 app.MapRazorPages()
    .WithStaticAssets();
-
-// Crea la base, los roles, los usuarios de prueba y los datos semilla
-using (var scope = app.Services.CreateScope())
-{
-    await SeedData.InicializarAsync(scope.ServiceProvider, app.Configuration);
-}
 
 app.Run();
