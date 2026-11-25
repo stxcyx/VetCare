@@ -1,0 +1,28 @@
+@model Veterinario
+@{
+    ViewData["Title"] = "Eliminar veterinario";
+}
+
+<h1>Eliminar veterinario</h1>
+<h4 class="text-danger">¿Seguro que deseas eliminar este veterinario?</h4>
+<hr />
+
+<dl class="row">
+    <dt class="col-sm-3">Nombre</dt>
+    <dd class="col-sm-9">@Model.Nombre</dd>
+
+    <dt class="col-sm-3">Código de colegiado</dt>
+    <dd class="col-sm-9">@Model.CodigoColegiado</dd>
+
+    <dt class="col-sm-3">Especialidad</dt>
+    <dd class="col-sm-9">@Model.Especialidad</dd>
+
+    <dt class="col-sm-3">Horario</dt>
+    <dd class="col-sm-9">@Model.HoraInicio.ToString(@"hh\:mm") – @Model.HoraFin.ToString(@"hh\:mm")</dd>
+</dl>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="VeterinarioId" />
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

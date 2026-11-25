@@ -1,0 +1,77 @@
+@model IEnumerable<Veterinario>
+@{
+    ViewData["Title"] = "Veterinarios";
+    bool esAdmin = User.IsInRole("Administrador");
+}
+
+<div class="vc-encabezado">
+    <div>
+        <p class="vc-ruta">Gestión clínica / Veterinarios</p>
+        <h1>Veterinarios</h1>
+        <p class="vc-subtitulo">Personal médico de la clínica y su horario de atención</p>
+    </div>
+    @if (esAdmin)
+    {
+        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nuevo registro</a>
+    }
+</div>
+
+<div class="vc-tabla-card">
+    <form asp-action="Index" method="get" class="vc-filtros">
+        <select name="especialidad" asp-items="ViewBag.Especialidades" class="form-select" style="max-width: 280px;">
+            <option value="">Todas las especialidades</option>
+        </select>
+        <button type="submit" class="vc-filtro-boton">Filtrar</button>
+    </form>
+
+    @if (!Model.Any())
+    {
+        <p class="vc-vacio">No se encontraron veterinarios</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table vc-tabla mb-0">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Colegiado</th>
+                        <th>Especialidad</th>
+                        <th>Horario</th>
+                        <th>Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var v in Model)
+                    {
+                        <tr>
+                            <td><a asp-action="Details" asp-route-id="@v.VeterinarioId" class="vc-link-fila">@v.Nombre</a></td>
+                            <td>@v.CodigoColegiado</td>
+                            <td>@v.Especialidad</td>
+                            <td>@v.HoraInicio.ToString(@"hh\:mm") – @v.HoraFin.ToString(@"hh\:mm")</td>
+                            <td>
+                                @if (v.Activo)
+                                {
+                                    <span class="badge text-bg-success">Activo</span>
+                                }
+                                else
+                                {
+                                    <span class="badge text-bg-secondary">Inactivo</span>
+                                }
+                            </td>
+                            <td class="text-center text-nowrap">
+                                <a asp-action="Details" asp-route-id="@v.VeterinarioId" class="vc-pill vc-pill-ver">Ver</a>
+                                @if (esAdmin)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@v.VeterinarioId" class="vc-pill vc-pill-editar">Editar</a>
+                                    <a asp-action="Delete" asp-route-id="@v.VeterinarioId" class="vc-pill vc-pill-eliminar">Eliminar</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

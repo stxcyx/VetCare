@@ -1,0 +1,30 @@
+@model Veterinario
+@{
+    ViewData["Title"] = "Editar veterinario";
+}
+
+<h1>Editar veterinario</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="VeterinarioId" />
+            <partial name="_Formulario" model="Model" />
+
+            <div class="form-check mb-3">
+                <input asp-for="Activo" class="form-check-input" />
+                <label asp-for="Activo" class="form-check-label">Activo (disponible para agendar citas)</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            <a asp-action="Index" class="btn btn-secondary">Volver</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
