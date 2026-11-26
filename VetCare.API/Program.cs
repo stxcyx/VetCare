@@ -23,12 +23,18 @@ builder.Services.AddIdentityCore<ApplicationUser>()
 builder.Services.AddScoped<IClienteDA, ClienteDA>();
 builder.Services.AddScoped<IClienteReglas, ClienteReglas>();
 builder.Services.AddScoped<IClienteFlujo, ClienteFlujo>();
+
 builder.Services.AddScoped<IMascotaDA, MascotaDA>();
 builder.Services.AddScoped<IMascotaReglas, MascotaReglas>();
 builder.Services.AddScoped<IMascotaFlujo, MascotaFlujo>();
+
 builder.Services.AddScoped<IProductoDA, ProductoDA>();
 builder.Services.AddScoped<IProductoReglas, ProductoReglas>();
 builder.Services.AddScoped<IProductoFlujo, ProductoFlujo>();
+
+builder.Services.AddScoped<IVeterinarioDA, VeterinarioDA>();
+builder.Services.AddScoped<IVeterinarioReglas, VeterinarioReglas>();
+builder.Services.AddScoped<IVeterinarioFlujo, VeterinarioFlujo>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);

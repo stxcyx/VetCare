@@ -1,0 +1,33 @@
+@model Veterinario
+@{
+    ViewData["Title"] = "Detalle del veterinario";
+}
+
+<h1>Detalle del veterinario</h1>
+<hr />
+
+<dl class="row">
+    <dt class="col-sm-3">Nombre</dt>
+    <dd class="col-sm-9">@Model.Nombre</dd>
+
+    <dt class="col-sm-3">Código de colegiado</dt>
+    <dd class="col-sm-9">@Model.CodigoColegiado</dd>
+
+    <dt class="col-sm-3">Especialidad</dt>
+    <dd class="col-sm-9">@Model.Especialidad</dd>
+
+    <dt class="col-sm-3">Teléfono</dt>
+    <dd class="col-sm-9">@Model.Telefono</dd>
+
+    <dt class="col-sm-3">Horario</dt>
+    <dd class="col-sm-9">@Model.HoraInicio.ToString(@"hh\:mm") – @Model.HoraFin.ToString(@"hh\:mm")</dd>
+
+    <dt class="col-sm-3">Estado</dt>
+    <dd class="col-sm-9">@(Model.Activo ? "Activo" : "Inactivo")</dd>
+</dl>
+
+<a asp-action="Index" class="btn btn-secondary">Volver</a>
+@if (User.IsInRole("Administrador"))
+{
+    <a asp-action="Edit" asp-route-id="@Model.VeterinarioId" class="btn btn-primary">Editar</a>
+}
