@@ -14,6 +14,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Veterinario> Veterinarios => Set<Veterinario>();
     public DbSet<Cita> Citas => Set<Cita>();
     public DbSet<Producto> Productos => Set<Producto>();
+    public DbSet<Proveedor> Proveedores => Set<Proveedor>();
     public DbSet<CitaProducto> CitaProductos => Set<CitaProducto>();
 
     protected override void OnModelCreating(ModelBuilder b)
@@ -24,6 +25,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         // así Abstracciones no depende de Identity.
         b.Entity<Cliente>().HasOne<ApplicationUser>().WithMany().HasForeignKey(c => c.UsuarioId);   // 0..1 a N
         b.Entity<Veterinario>().HasOne<ApplicationUser>().WithMany().HasForeignKey(v => v.UsuarioId);
+
+        // Relación entre productos y proveedores
+        b.Entity<Producto>().HasOne(p => p.Proveedor).WithMany(p => p.Productos).HasForeignKey(p => p.ProveedorId);
 
         b.Entity<Cliente>().HasIndex(c => c.Cedula).IsUnique();
         b.Entity<Cliente>().HasIndex(c => c.UsuarioId);   // NO único: un usuario registra muchos clientes

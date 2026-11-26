@@ -366,6 +366,9 @@ namespace VetCare.DA.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("ProveedorId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
@@ -374,10 +377,30 @@ namespace VetCare.DA.Migrations
 
                     b.HasKey("ProductoId");
 
+                    b.HasIndex("ProveedorId");
+
                     b.HasIndex("Nombre", "Categoria")
                         .IsUnique();
 
                     b.ToTable("Productos");
+                });
+
+            modelBuilder.Entity("VetCare.Abstracciones.Modelos.Proveedor", b =>
+                {
+                    b.Property<int>("ProveedorId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProveedorId"));
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("ProveedorId");
+
+                    b.ToTable("Proveedores");
                 });
 
             modelBuilder.Entity("VetCare.Abstracciones.Modelos.Veterinario", b =>
@@ -617,6 +640,17 @@ namespace VetCare.DA.Migrations
                     b.Navigation("Especie");
                 });
 
+            modelBuilder.Entity("VetCare.Abstracciones.Modelos.Producto", b =>
+                {
+                    b.HasOne("VetCare.Abstracciones.Modelos.Proveedor", "Proveedor")
+                        .WithMany("Productos")
+                        .HasForeignKey("ProveedorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Proveedor");
+                });
+
             modelBuilder.Entity("VetCare.Abstracciones.Modelos.Veterinario", b =>
                 {
                     b.HasOne("VetCare.DA.ApplicationUser", null)
@@ -649,6 +683,11 @@ namespace VetCare.DA.Migrations
             modelBuilder.Entity("VetCare.Abstracciones.Modelos.Producto", b =>
                 {
                     b.Navigation("CitaProductos");
+                });
+
+            modelBuilder.Entity("VetCare.Abstracciones.Modelos.Proveedor", b =>
+                {
+                    b.Navigation("Productos");
                 });
 
             modelBuilder.Entity("VetCare.Abstracciones.Modelos.Veterinario", b =>

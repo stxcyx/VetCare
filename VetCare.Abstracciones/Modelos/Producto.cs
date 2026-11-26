@@ -20,6 +20,10 @@ public class Producto
     [Required(ErrorMessage = "La categoría es obligatoria")]
     public CategoriaProducto Categoria { get; set; }
 
+    [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un proveedor")]
+    public int ProveedorId { get; set; }
+    public Proveedor? Proveedor { get; set; }
+
     [Range(0, 9999999, ErrorMessage = "El precio no puede ser negativo")]
     public decimal Precio { get; set; }
 

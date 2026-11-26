@@ -96,10 +96,22 @@ public static class SeedData
         };
         context.Veterinarios.AddRange(v1, v2);
 
+        // Proveedores de prueba
+        var proveedor1 = new Proveedor
+        {
+            Nombre = "Distribuidora Veterinaria"
+        };
+        var proveedor2 = new Proveedor
+        {
+            Nombre = "Distribuidora de Insumos Médicos"
+        };
+        context.Proveedores.AddRange(proveedor1, proveedor2);
+
         var p1 = new Producto
         {
             Nombre = "Amoxicilina 250 mg",
             Categoria = CategoriaProducto.Medicamento,
+            Proveedor = proveedor1,
             Precio = 3500m,
             Stock = 20,
             StockMinimo = 5
@@ -108,6 +120,7 @@ public static class SeedData
         {
             Nombre = "Vacuna antirrábica",
             Categoria = CategoriaProducto.Vacuna,
+            Proveedor = proveedor1,
             Precio = 8000m,
             Stock = 3,
             StockMinimo = 5
@@ -116,6 +129,7 @@ public static class SeedData
         {
             Nombre = "Jeringa 3 ml",
             Categoria = CategoriaProducto.Insumo,
+            Proveedor = proveedor2,
             Precio = 250m,
             Stock = 100,
             StockMinimo = 20

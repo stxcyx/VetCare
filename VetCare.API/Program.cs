@@ -26,6 +26,9 @@ builder.Services.AddScoped<IClienteFlujo, ClienteFlujo>();
 builder.Services.AddScoped<IMascotaDA, MascotaDA>();
 builder.Services.AddScoped<IMascotaReglas, MascotaReglas>();
 builder.Services.AddScoped<IMascotaFlujo, MascotaFlujo>();
+builder.Services.AddScoped<IProductoDA, ProductoDA>();
+builder.Services.AddScoped<IProductoReglas, ProductoReglas>();
+builder.Services.AddScoped<IProductoFlujo, ProductoFlujo>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
