@@ -1,0 +1,366 @@
+﻿@model IEnumerable<Producto>
+
+@{
+    ViewData["Title"] = "Inventario";
+
+    int pagina = ViewBag.Pagina;
+    int totalPaginas = ViewBag.TotalPaginas;
+
+    CategoriaProducto? categoria = ViewBag.Categoria;
+    string? estado = ViewBag.Estado;
+    string ordenarPor = ViewBag.OrdenarPor;
+    string direccion = ViewBag.Direccion;
+
+    ResumenInventario resumen = ViewBag.Resumen;
+}
+
+<div class="vc-encabezado">
+    <div>
+        <p class="vc-ruta">Gestión clínica / Inventario</p>
+
+        <h1>Inventario</h1>
+
+        <p class="vc-subtitulo">
+            Gestión de medicamentos, vacunas, insumos y alimentos
+        </p>
+    </div>
+
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> Nuevo registro
+    </a>
+</div>
+
+<div class="row g-3 mb-4">
+
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="vc-inventario-indicador">
+
+            <div class="vc-inventario-icono">
+                <i class="bi bi-box-seam"></i>
+            </div>
+
+            <div class="vc-inventario-datos">
+                <span>Productos activos</span>
+                <strong>@resumen.ProductosActivos</strong>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="vc-inventario-indicador">
+
+            <div class="vc-inventario-icono">
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+
+            <div class="vc-inventario-datos">
+                <span>Stock bajo</span>
+                <strong>@resumen.StockBajo</strong>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="vc-inventario-indicador">
+
+            <div class="vc-inventario-icono">
+                <i class="bi bi-bandaid"></i>
+            </div>
+
+            <div class="vc-inventario-datos">
+                <span>Vacunas</span>
+                <strong>@resumen.Vacunas</strong>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="vc-inventario-indicador">
+
+            <div class="vc-inventario-icono">
+                <i class="bi bi-capsule"></i>
+            </div>
+
+            <div class="vc-inventario-datos">
+                <span>Medicamentos</span>
+                <strong>@resumen.Medicamentos</strong>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="vc-tabla-card">
+
+    <form asp-action="Index" method="get" class="vc-filtros">
+
+        <div class="vc-filtro-busqueda">
+            <i class="bi bi-search"></i>
+
+            <input name="buscar"
+                   value="@ViewBag.Buscar"
+                   placeholder="Buscar en inventario..."
+                   aria-label="Buscar en inventario"
+                   maxlength="100" />
+        </div>
+
+        <select name="categoria"
+                class="vc-filtro-select"
+                aria-label="Filtrar por categoría">
+
+            <option value="">Todas las categorías</option>
+
+            @foreach (var item in Enum.GetValues<CategoriaProducto>())
+            {
+                <option value="@item"
+                        selected="@(categoria == item)">
+                    @item
+                </option>
+            }
+
+        </select>
+
+        <select name="estado"
+                class="vc-filtro-select"
+                aria-label="Filtrar por estado">
+
+            <option value="">Todos los registros</option>
+
+            <option value="Disponible"
+                    selected="@(estado == "Disponible")">
+                Disponible
+            </option>
+
+            <option value="StockBajo"
+                    selected="@(estado == "StockBajo")">
+                Stock bajo
+            </option>
+
+            <option value="Inactivo"
+                    selected="@(estado == "Inactivo")">
+                Inactivo
+            </option>
+
+        </select>
+
+        <input type="hidden"
+               name="ordenarPor"
+               value="@ordenarPor" />
+
+        <input type="hidden"
+               name="direccion"
+               value="@direccion" />
+
+        <button type="submit" class="vc-filtro-boton">
+            Buscar
+        </button>
+
+        <a asp-action="Index"
+           class="vc-filtro-boton"
+           title="Restablecer filtros">
+
+            <i class="bi bi-arrow-clockwise"></i> Limpiar
+
+        </a>
+
+    </form>
+
+    @if (!Model.Any())
+    {
+        <p class="vc-vacio">
+            No se encontraron productos
+        </p>
+    }
+    else
+    {
+        <div class="table-responsive">
+
+            <table class="table vc-tabla mb-0">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+
+                        <th>
+                            <a asp-action="Index"
+                               asp-route-buscar="@ViewBag.Buscar"
+                               asp-route-categoria="@categoria"
+                               asp-route-estado="@estado"
+                               asp-route-ordenarPor="Nombre"
+                               asp-route-direccion="@(ordenarPor == "Nombre" && direccion == "ASC" ? "DESC" : "ASC")"
+                               class="text-decoration-none text-reset">
+
+                                Producto
+
+                                <i class="bi @(ordenarPor == "Nombre"
+                                                                    ? (direccion == "ASC" ? "bi-arrow-up" : "bi-arrow-down")
+                                                                    : "bi-arrow-down-up")"></i>
+
+                            </a>
+                        </th>
+
+                        <th>
+                            <a asp-action="Index"
+                               asp-route-buscar="@ViewBag.Buscar"
+                               asp-route-categoria="@categoria"
+                               asp-route-estado="@estado"
+                               asp-route-ordenarPor="Categoria"
+                               asp-route-direccion="@(ordenarPor == "Categoria" && direccion == "ASC" ? "DESC" : "ASC")"
+                               class="text-decoration-none text-reset">
+
+                                Categoría
+
+                                <i class="bi @(ordenarPor == "Categoria"
+                                                                    ? (direccion == "ASC" ? "bi-arrow-up" : "bi-arrow-down")
+                                                                    : "bi-arrow-down-up")"></i>
+
+                            </a>
+                        </th>
+
+                        <th>Precio</th>
+
+                        <th>
+                            <a asp-action="Index"
+                               asp-route-buscar="@ViewBag.Buscar"
+                               asp-route-categoria="@categoria"
+                               asp-route-estado="@estado"
+                               asp-route-ordenarPor="Stock"
+                               asp-route-direccion="@(ordenarPor == "Stock" && direccion == "ASC" ? "DESC" : "ASC")"
+                               class="text-decoration-none text-reset">
+
+                                Stock
+
+                                <i class="bi @(ordenarPor == "Stock"
+                                                                    ? (direccion == "ASC" ? "bi-arrow-up" : "bi-arrow-down")
+                                                                    : "bi-arrow-down-up")"></i>
+
+                            </a>
+                        </th>
+
+                        <th>Mínimo</th>
+
+                        <th>Estado</th>
+
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var p in Model)
+                    {
+                        <tr>
+
+                            <td>@p.ProductoId</td>
+
+                            <td>
+                                <a asp-action="Details"
+                                   asp-route-id="@p.ProductoId"
+                                   class="vc-link-fila">
+
+                                    @p.Nombre
+
+                                </a>
+                            </td>
+
+                            <td>@p.Categoria</td>
+
+                            <td class="text-nowrap">
+                                ₡@p.Precio.ToString("N2")
+                            </td>
+
+                            <td>@p.Stock</td>
+
+                            <td>@p.StockMinimo</td>
+
+                            <td>
+
+                                @if (!p.Activo)
+                                {
+                                    <span class="vc-stock-inactivo">
+                                        Inactivo
+                                    </span>
+                                }
+                                else if (p.BajoStock)
+                                {
+                                    <span class="vc-stock-bajo">
+                                        Stock bajo
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="vc-stock-disponible">
+                                        Disponible
+                                    </span>
+                                }
+
+                            </td>
+
+                            <td class="text-center text-nowrap">
+
+                                <a asp-action="Details"
+                                   asp-route-id="@p.ProductoId"
+                                   class="vc-pill vc-pill-ver">
+                                    Ver
+                                </a>
+
+                                <a asp-action="Edit"
+                                   asp-route-id="@p.ProductoId"
+                                   class="vc-pill vc-pill-editar">
+                                    Editar
+                                </a>
+
+                                <a asp-action="Delete"
+                                   asp-route-id="@p.ProductoId"
+                                   class="vc-pill vc-pill-eliminar">
+                                    Eliminar
+                                </a>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+    }
+
+</div>
+
+@if (totalPaginas > 1)
+{
+    <nav class="mt-3" aria-label="Paginación de inventario">
+
+        <ul class="pagination flex-wrap">
+
+            @for (var p = 1; p <= totalPaginas; p++)
+            {
+                <li class="page-item @(p == pagina ? "active" : "")">
+
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-pagina="@p"
+                       asp-route-buscar="@ViewBag.Buscar"
+                       asp-route-categoria="@categoria"
+                       asp-route-estado="@estado"
+                       asp-route-ordenarPor="@ordenarPor"
+                       asp-route-direccion="@direccion">
+
+                        @p
+
+                    </a>
+
+                </li>
+            }
+
+        </ul>
+
+    </nav>
+}

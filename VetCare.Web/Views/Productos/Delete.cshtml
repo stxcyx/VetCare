@@ -1,0 +1,92 @@
+﻿@model VetCare.Abstracciones.Modelos.Producto
+
+@{
+    ViewData["Title"] = "Eliminar producto";
+}
+
+<div class="vc-dashboard">
+
+    <div class="mb-4">
+        <h2 class="vc-dashboard-titulo">Eliminar producto</h2>
+        <p class="text-muted mb-0">
+            Confirmación de eliminación o desactivación
+        </p>
+    </div>
+
+    <div class="vc-dashboard-panel">
+
+        <div class="alert alert-warning">
+            <h5 class="alert-heading">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                ¿Está seguro de realizar esta operación?
+            </h5>
+
+            <p>
+                Si el producto no ha sido utilizado en consultas,
+                será eliminado permanentemente.
+            </p>
+
+            <p class="mb-0">
+                Si tiene consultas asociadas, será desactivado
+                para conservar su historial de uso.
+            </p>
+        </div>
+
+        <dl class="row mt-4">
+
+            <dt class="col-sm-4">Código</dt>
+            <dd class="col-sm-8">@Model.ProductoId</dd>
+
+            <dt class="col-sm-4">Nombre</dt>
+            <dd class="col-sm-8">@Model.Nombre</dd>
+
+            <dt class="col-sm-4">Categoría</dt>
+            <dd class="col-sm-8">@Model.Categoria</dd>
+
+            <dt class="col-sm-4">Proveedor</dt>
+            <dd class="col-sm-8">@Model.Proveedor?.Nombre</dd>
+
+            <dt class="col-sm-4">Precio</dt>
+            <dd class="col-sm-8">₡@Model.Precio.ToString("N2")</dd>
+
+            <dt class="col-sm-4">Stock actual</dt>
+            <dd class="col-sm-8">@Model.Stock</dd>
+
+            <dt class="col-sm-4">Stock mínimo</dt>
+            <dd class="col-sm-8">@Model.StockMinimo</dd>
+
+            <dt class="col-sm-4">Estado</dt>
+            <dd class="col-sm-8">
+                @(Model.Activo ? "Activo" : "Inactivo")
+            </dd>
+
+        </dl>
+
+        <form asp-controller="Productos"
+              asp-action="Delete"
+              asp-route-id="@Model.ProductoId"
+              method="post">
+
+            <div class="d-flex flex-wrap gap-2 mt-4">
+
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash me-1"></i>
+                    Confirmar operación
+                </button>
+
+                <a asp-controller="Productos"
+                   asp-action="Index"
+                   class="btn btn-outline-secondary">
+
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Cancelar
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

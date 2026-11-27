@@ -201,7 +201,7 @@ namespace VetCare.DA.Migrations
 
                     b.HasIndex("VeterinarioId");
 
-                    b.ToTable("Citas");
+                    b.ToTable("Citas", (string)null);
                 });
 
             modelBuilder.Entity("VetCare.Abstracciones.Modelos.CitaProducto", b =>
@@ -219,7 +219,7 @@ namespace VetCare.DA.Migrations
 
                     b.HasIndex("ProductoId");
 
-                    b.ToTable("CitaProductos");
+                    b.ToTable("CitaProductos", (string)null);
                 });
 
             modelBuilder.Entity("VetCare.Abstracciones.Modelos.Cliente", b =>
@@ -270,7 +270,7 @@ namespace VetCare.DA.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Clientes");
+                    b.ToTable("Clientes", (string)null);
                 });
 
             modelBuilder.Entity("VetCare.Abstracciones.Modelos.Especie", b =>
@@ -288,7 +288,7 @@ namespace VetCare.DA.Migrations
 
                     b.HasKey("EspecieId");
 
-                    b.ToTable("Especies");
+                    b.ToTable("Especies", (string)null);
                 });
 
             modelBuilder.Entity("VetCare.Abstracciones.Modelos.Mascota", b =>
@@ -335,7 +335,7 @@ namespace VetCare.DA.Migrations
 
                     b.HasIndex("EspecieId");
 
-                    b.ToTable("Mascotas");
+                    b.ToTable("Mascotas", (string)null);
                 });
 
             modelBuilder.Entity("VetCare.Abstracciones.Modelos.Producto", b =>
@@ -382,7 +382,7 @@ namespace VetCare.DA.Migrations
                     b.HasIndex("Nombre", "Categoria")
                         .IsUnique();
 
-                    b.ToTable("Productos");
+                    b.ToTable("Productos", (string)null);
                 });
 
             modelBuilder.Entity("VetCare.Abstracciones.Modelos.Proveedor", b =>
@@ -400,7 +400,7 @@ namespace VetCare.DA.Migrations
 
                     b.HasKey("ProveedorId");
 
-                    b.ToTable("Proveedores");
+                    b.ToTable("Proveedores", (string)null);
                 });
 
             modelBuilder.Entity("VetCare.Abstracciones.Modelos.Veterinario", b =>
@@ -451,7 +451,7 @@ namespace VetCare.DA.Migrations
                     b.HasIndex("UsuarioId")
                         .IsUnique();
 
-                    b.ToTable("Veterinarios");
+                    b.ToTable("Veterinarios", (string)null);
                 });
 
             modelBuilder.Entity("VetCare.DA.ApplicationUser", b =>

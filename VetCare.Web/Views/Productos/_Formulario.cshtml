@@ -1,0 +1,101 @@
+﻿@model Producto
+
+<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+<div class="row g-3">
+
+    <div class="col-md-6">
+        <label asp-for="Nombre" class="form-label">
+            Nombre del producto
+        </label>
+
+        <input asp-for="Nombre"
+               class="form-control"
+               placeholder="Ingrese el nombre del producto" />
+
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="Categoria" class="form-label">
+            Categoría
+        </label>
+
+        <select asp-for="Categoria"
+                asp-items="Html.GetEnumSelectList<CategoriaProducto>()"
+                class="form-select">
+        </select>
+
+        <span asp-validation-for="Categoria" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="ProveedorId" class="form-label">
+            Proveedor
+        </label>
+
+        <select asp-for="ProveedorId"
+                asp-items="ViewBag.Proveedores"
+                class="form-select">
+            <option value="">Seleccione un proveedor</option>
+        </select>
+
+        <span asp-validation-for="ProveedorId" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="Precio" class="form-label">
+            Precio (₡)
+        </label>
+
+        <input asp-for="Precio" class="form-control" />
+
+        <span asp-validation-for="Precio" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="Stock" class="form-label">
+            Stock actual
+        </label>
+
+        <input asp-for="Stock" class="form-control" />
+
+        <span asp-validation-for="Stock" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="StockMinimo" class="form-label">
+            Stock mínimo
+        </label>
+
+        <input asp-for="StockMinimo" class="form-control" />
+
+        <span asp-validation-for="StockMinimo" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="FechaVencimiento" class="form-label">
+            Fecha de vencimiento
+        </label>
+
+        <input asp-for="FechaVencimiento"
+               type="date"
+               class="form-control" />
+
+        <span asp-validation-for="FechaVencimiento"
+              class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6 d-flex align-items-center">
+        <div class="form-check form-switch mt-3">
+
+            <input asp-for="Activo" class="form-check-input" />
+
+            <label asp-for="Activo" class="form-check-label">
+                Producto activo
+            </label>
+
+        </div>
+    </div>
+
+</div>

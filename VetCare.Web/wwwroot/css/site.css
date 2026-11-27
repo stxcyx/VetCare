@@ -543,3 +543,412 @@ body.vc-menu-cerrado .vc-sidebar {
         padding: 16px;
     }
 }
+
+
+
+
+
+
+
+
+/* ===== Inventario ===== */
+
+.vc-inventario-indicador {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #f1eafa;
+    border: 1px solid #e3d9f2;
+    border-radius: 10px;
+    padding: 16px;
+    min-height: 110px;
+    height: 100%;
+}
+
+.vc-inventario-icono {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    background: #e3d7f4;
+    color: #684a91;
+    border-radius: 10px;
+    font-size: 1.6rem;
+}
+
+.vc-inventario-datos {
+    flex-grow: 1;
+    text-align: center;
+}
+
+    .vc-inventario-datos span {
+        display: block;
+        font-size: .85rem;
+        font-weight: 600;
+        color: #584a70;
+        margin-bottom: 4px;
+    }
+
+    .vc-inventario-datos strong {
+        display: block;
+        font-size: 1.9rem;
+        font-weight: 700;
+        color: #29233b;
+        line-height: 1.2;
+    }
+
+/* Estados del inventario */
+
+.vc-stock-disponible,
+.vc-stock-bajo,
+.vc-stock-inactivo {
+    display: inline-block;
+    min-width: 85px;
+    text-align: center;
+    padding: 3px 12px;
+    border-radius: 999px;
+    font-size: .82rem;
+    white-space: nowrap;
+}
+
+.vc-stock-disponible {
+    background: #d8f5df;
+    color: #2fa84f;
+}
+
+.vc-stock-bajo {
+    background: #fff0cc;
+    color: #a16207;
+}
+
+.vc-stock-inactivo {
+    background: #e9ecef;
+    color: #6b7280;
+}
+
+/* Enlaces de la barra de filtros */
+
+a.vc-filtro-boton {
+    color: #374151;
+    text-decoration: none;
+}
+
+    a.vc-filtro-boton:hover {
+        background: #e3e8f0;
+    }
+
+/* Inventario responsivo */
+
+@media (max-width: 575.98px) {
+    .vc-inventario-indicador {
+        min-height: 90px;
+        padding: 12px;
+    }
+
+    .vc-inventario-icono {
+        width: 44px;
+        height: 44px;
+        font-size: 1.3rem;
+    }
+
+    .vc-inventario-datos strong {
+        font-size: 1.6rem;
+    }
+}
+
+
+
+
+
+
+/* ========================================
+   DASHBOARD - HU-24
+======================================== */
+
+.vc-dashboard {
+    width: 100%;
+}
+
+.vc-dashboard-titulo {
+    color: #174A8B;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+/* Indicadores */
+
+.vc-dashboard-indicador {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: #EDE4F8;
+    border: 1px solid #E4D8F3;
+    border-radius: 12px;
+    padding: 20px;
+    min-height: 120px;
+    height: 100%;
+}
+
+.vc-dashboard-icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background-color: #DED0F1;
+    color: #7555A0;
+    border-radius: 10px;
+    font-size: 23px;
+}
+
+.vc-dashboard-etiqueta {
+    font-size: 13px;
+    font-weight: 500;
+    color: #604C7D;
+}
+
+.vc-dashboard-valor {
+    font-size: 30px;
+    font-weight: 700;
+    color: #533B78;
+    line-height: 1.3;
+}
+
+/* Paneles */
+
+.vc-dashboard-panel {
+    background-color: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    padding: 24px;
+    height: 100%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+    .vc-dashboard-panel h5 {
+        color: #174A8B;
+        font-size: 17px;
+        font-weight: 600;
+    }
+
+/* Gráficos */
+
+.vc-dashboard-grafico {
+    position: relative;
+    width: 100%;
+    height: 300px;
+}
+
+/* Gráficos sin registros */
+
+.vc-dashboard-sin-datos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    color: #94A3B8;
+    text-align: center;
+}
+
+    .vc-dashboard-sin-datos i {
+        font-size: 45px;
+        margin-bottom: 12px;
+    }
+
+    .vc-dashboard-sin-datos p {
+        font-size: 14px;
+        margin-bottom: 0;
+    }
+
+/* Accesos rápidos */
+
+.vc-dashboard-acceso {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    color: #174A8B;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+    .vc-dashboard-acceso i {
+        font-size: 20px;
+    }
+
+    .vc-dashboard-acceso:hover {
+        background-color: #EDF4FC;
+        border-color: #4285D4;
+        color: #174A8B;
+    }
+
+/* Diseño responsivo */
+
+@media (max-width: 768px) {
+
+    .vc-dashboard-titulo {
+        font-size: 24px;
+    }
+
+    .vc-dashboard-indicador {
+        min-height: 100px;
+        padding: 15px;
+    }
+
+    .vc-dashboard-panel {
+        padding: 18px;
+    }
+
+    .vc-dashboard-grafico {
+        height: 260px;
+    }
+
+    .vc-dashboard-valor {
+        font-size: 26px;
+    }
+}
+
+
+
+
+
+
+
+/* ========================================
+   REPORTES - HU-25
+======================================== */
+
+.vc-reportes {
+    width: 100%;
+}
+
+/* Botón de filtros */
+
+.vc-reporte-filtrar {
+    background-color: #174A8B;
+    border: 1px solid #174A8B;
+    color: #FFFFFF;
+    font-weight: 500;
+}
+
+    .vc-reporte-filtrar:hover {
+        background-color: #123C72;
+        border-color: #123C72;
+        color: #FFFFFF;
+    }
+
+/* Formulario */
+
+.vc-reportes .form-label {
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.vc-reportes .form-control,
+.vc-reportes .form-select {
+    min-height: 42px;
+    border-color: #DCE1E7;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+    .vc-reportes .form-control:focus,
+    .vc-reportes .form-select:focus {
+        border-color: #4285D4;
+        box-shadow: 0 0 0 3px rgba(66, 133, 212, 0.12);
+    }
+
+/* Tabla de reportes */
+
+.vc-reporte-tabla {
+    font-size: 14px;
+}
+
+    .vc-reporte-tabla thead th {
+        background-color: #EDF3FA;
+        color: #174A8B;
+        font-weight: 600;
+        padding: 14px;
+        white-space: nowrap;
+        border-bottom: 1px solid #DCE5F0;
+    }
+
+    .vc-reporte-tabla tbody td {
+        padding: 14px;
+        vertical-align: middle;
+        border-color: #EEF0F3;
+    }
+
+    .vc-reporte-tabla tbody tr:hover {
+        background-color: #F8FAFC;
+    }
+
+/* Estados de las citas */
+
+.vc-reporte-estado {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+    .vc-reporte-estado.vc-cita-programada {
+        background-color: #DBEAFE;
+        color: #1D4ED8;
+    }
+
+    .vc-reporte-estado.vc-cita-atendida {
+        background-color: #DCFCE7;
+        color: #15803D;
+    }
+
+    .vc-reporte-estado.vc-cita-cancelada {
+        background-color: #FEE2E2;
+        color: #B91C1C;
+    }
+
+/* Validaciones */
+
+.vc-reportes .validation-summary-valid {
+    display: none;
+}
+
+.vc-reportes .validation-summary-errors {
+    background-color: #FEF2F2;
+    border: 1px solid #FECACA;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 14px;
+}
+
+    .vc-reportes .validation-summary-errors ul {
+        margin-bottom: 0;
+    }
+
+/* Diseño responsivo */
+
+@media (max-width: 768px) {
+
+    .vc-reporte-tabla {
+        font-size: 13px;
+    }
+
+        .vc-reporte-tabla thead th,
+        .vc-reporte-tabla tbody td {
+            padding: 10px;
+        }
+
+    .vc-reportes .btn {
+        font-size: 13px;
+    }
+}

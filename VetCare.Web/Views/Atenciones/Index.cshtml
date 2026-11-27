@@ -1,0 +1,300 @@
+﻿@using VetCare.Abstracciones.Modelos
+
+@model List<Cita>
+
+@{
+    ViewData["Title"] = "Atenciones veterinarias";
+
+    var historial = ViewBag.Historial as List<Cita>
+        ?? new List<Cita>();
+}
+
+<div class="container-fluid py-4">
+
+    <div class="mb-4">
+
+        <h2 class="fw-bold mb-1">
+            Atenciones veterinarias
+        </h2>
+
+        <p class="text-muted">
+            Registro de atención, historial y consumo de productos.
+        </p>
+
+    </div>
+
+    <!-- Indicadores -->
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-12 col-md-4">
+
+            <div class="card border-0 shadow-sm h-100"
+                 style="background-color: #EDE4F8;">
+
+                <div class="card-body d-flex align-items-center gap-3">
+
+                    <i class="bi bi-calendar-event fs-2"
+                       style="color: #7555A0;"></i>
+
+                    <div>
+
+                        <small style="color: #604C7D;">
+                            Citas pendientes
+                        </small>
+
+                        <h3 class="fw-bold mb-0"
+                            style="color: #533B78;">
+                            @Model.Count
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-12 col-md-4">
+
+            <div class="card border-0 shadow-sm h-100"
+                 style="background-color: #DCFCE7;">
+
+                <div class="card-body d-flex align-items-center gap-3">
+
+                    <i class="bi bi-calendar-check fs-2"
+                       style="color: #15803D;"></i>
+
+                    <div>
+
+                        <small style="color: #15803D;">
+                            Citas atendidas
+                        </small>
+
+                        <h3 class="fw-bold mb-0"
+                            style="color: #15803D;">
+                            @historial.Count
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Citas pendientes -->
+
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-header text-white py-3"
+             style="background-color: #194B85;">
+
+            <h6 class="fw-bold mb-0">
+                <i class="bi bi-calendar-event me-2"></i>
+                Citas pendientes de atención
+            </h6>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-light">
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha y hora</th>
+                        <th>Mascota</th>
+                        <th>Veterinario</th>
+                        <th>Motivo</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @foreach (var cita in Model)
+                    {
+                        <tr>
+
+                            <td>@cita.CitaId</td>
+
+                            <td class="text-nowrap">
+                                @cita.FechaHora.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+
+                            <td>
+                                @cita.NombreMascota
+                            </td>
+
+                            <td>
+                                @cita.NombreVeterinario
+                            </td>
+
+                            <td>
+                                @cita.Motivo
+                            </td>
+
+                            <td>
+                                <span class="badge bg-primary">
+                                    Programada
+                                </span>
+                            </td>
+
+                            <td>
+
+                                <a asp-action="Registrar"
+                                   asp-route-id="@cita.CitaId"
+                                   class="btn btn-success btn-sm">
+
+                                    <i class="bi bi-clipboard-check"></i>
+                                    Registrar atención
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                    @if (!Model.Any())
+                    {
+                        <tr>
+
+                            <td colspan="7"
+                                class="text-center text-muted py-4">
+
+                                No existen citas pendientes de atención.
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- Historial de atenciones -->
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header text-white py-3"
+             style="background-color: #194B85;">
+
+            <h6 class="fw-bold mb-0">
+                <i class="bi bi-clock-history me-2"></i>
+                Historial de atenciones
+            </h6>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-light">
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha y hora</th>
+                        <th>Mascota</th>
+                        <th>Veterinario</th>
+                        <th>Motivo</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @foreach (var cita in historial)
+                    {
+                        <tr>
+
+                            <td>@cita.CitaId</td>
+
+                            <td class="text-nowrap">
+                                @cita.FechaHora.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+
+                            <td>
+                                @cita.NombreMascota
+                            </td>
+
+                            <td>
+                                @cita.NombreVeterinario
+                            </td>
+
+                            <td>
+                                @cita.Motivo
+                            </td>
+
+                            <td>
+
+                                <span class="badge bg-success">
+                                    Atendida
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                <a asp-action="Detalle"
+                                   asp-route-id="@cita.CitaId"
+                                   class="btn btn-outline-primary btn-sm">
+
+                                    <i class="bi bi-eye"></i>
+                                    Ver atención
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                    @if (!historial.Any())
+                    {
+                        <tr>
+
+                            <td colspan="7"
+                                class="text-center text-muted py-4">
+
+                                No existen atenciones registradas.
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="card-footer bg-white">
+
+            <small class="text-muted">
+                Total de atenciones: @historial.Count
+            </small>
+
+        </div>
+
+    </div>
+
+</div>

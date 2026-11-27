@@ -18,39 +18,66 @@ public class ProductoFlujo : IProductoFlujo
         _reglas = reglas;
     }
 
-    public Task<PaginaResultado<Producto>> ListarAsync(string? buscar, int pagina) =>
-        _da.ListarAsync(buscar, Math.Max(1, pagina), TamanoPagina);
+    public Task<PaginaResultado<Producto>> ListarAsync(
+        string? buscar,
+        int pagina,
+        CategoriaProducto? categoria = null,
+        string? estado = null,
+        string ordenarPor = "Nombre",
+        string direccion = "ASC") =>
+        _da.ListarAsync(
+            buscar,
+            Math.Max(1, pagina),
+            TamanoPagina,
+            categoria,
+            estado,
+            ordenarPor,
+            direccion);
 
     public Task<Producto?> ObtenerAsync(int id) =>
         _da.ObtenerAsync(id);
 
     public async Task<Resultado<Producto>> RegistrarAsync(Producto producto)
     {
-        var error = await _reglas.ValidarProductoUnicoAsync(producto.Nombre, producto.Categoria);
-        if (error is not null)
-            return Resultado<Producto>.Conflicto(error, nameof(Producto.Nombre));
+        var error = await _reglas.ValidarProductoUnicoAsync(
+            producto.Nombre, producto.Categoria);
 
-        error = await _reglas.ValidarProveedorAsync(producto.ProveedorId);
         if (error is not null)
-            return Resultado<Producto>.Conflicto(error, nameof(Producto.ProveedorId));
+            return Resultado<Producto>.Conflicto(
+                error, nameof(Producto.Nombre));
+
+        error = await _reglas.ValidarProveedorAsync(
+            producto.ProveedorId);
+
+        if (error is not null)
+            return Resultado<Producto>.Conflicto(
+                error, nameof(Producto.ProveedorId));
 
         producto.ProductoId = 0;
 
-        return Resultado<Producto>.Exito(await _da.AgregarAsync(producto));
+        return Resultado<Producto>.Exito(
+            await _da.AgregarAsync(producto));
     }
 
-    public async Task<Resultado<Producto>> ActualizarAsync(int id, Producto producto)
+    public async Task<Resultado<Producto>> ActualizarAsync(
+        int id, Producto producto)
     {
         if (await _da.ObtenerAsync(id) is null)
             return Resultado<Producto>.NoEncontrado();
 
-        var error = await _reglas.ValidarProductoUnicoAsync(producto.Nombre, producto.Categoria, id);
-        if (error is not null)
-            return Resultado<Producto>.Conflicto(error, nameof(Producto.Nombre));
+        var error = await _reglas.ValidarProductoUnicoAsync(
+            producto.Nombre, producto.Categoria, id);
 
-        error = await _reglas.ValidarProveedorAsync(producto.ProveedorId);
         if (error is not null)
-            return Resultado<Producto>.Conflicto(error, nameof(Producto.ProveedorId));
+            return Resultado<Producto>.Conflicto(
+                error, nameof(Producto.Nombre));
+
+        error = await _reglas.ValidarProveedorAsync(
+            producto.ProveedorId);
+
+        if (error is not null)
+            return Resultado<Producto>.Conflicto(
+                error, nameof(Producto.ProveedorId));
 
         producto.ProductoId = id;
 
@@ -62,17 +89,15 @@ public class ProductoFlujo : IProductoFlujo
 
     public async Task<Resultado<bool>> EliminarAsync(int id)
     {
-        if (await _da.ObtenerAsync(id) is null)
-            return Resultado<bool>.NoEncontrado();
-
         if (!await _da.EliminarAsync(id))
-        {
-            if (await _da.ObtenerAsync(id) is null)
-                return Resultado<bool>.NoEncontrado();
-
-            return Resultado<bool>.Conflicto("No se puede eliminar: el producto tiene citas asociadas");
-        }
+            return Resultado<bool>.NoEncontrado();
 
         return Resultado<bool>.Exito(true);
     }
+
+    public Task<List<Proveedor>> ListarProveedoresAsync() =>
+        _da.ListarProveedoresAsync();
+
+    public Task<ResumenInventario> ObtenerResumenAsync() =>
+        _da.ObtenerResumenAsync();
 }

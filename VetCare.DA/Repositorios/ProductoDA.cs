@@ -14,7 +14,13 @@ public class ProductoDA : IProductoDA
     public ProductoDA(ApplicationDbContext context) => _context = context;
 
     public async Task<PaginaResultado<Producto>> ListarAsync(
-        string? buscar, int pagina, int tamano)
+        string? buscar,
+        int pagina,
+        int tamano,
+        CategoriaProducto? categoria = null,
+        string? estado = null,
+        string ordenarPor = "Nombre",
+        string direccion = "ASC")
     {
         var elementos = new List<Producto>();
         var total = 0;
@@ -34,6 +40,15 @@ public class ProductoDA : IProductoDA
 
             cmd.Parameters.AddWithValue("@Pagina", pagina);
             cmd.Parameters.AddWithValue("@Tamano", tamano);
+
+            cmd.Parameters.AddWithValue("@Categoria",
+                (object?)categoria?.ToString() ?? DBNull.Value);
+
+            cmd.Parameters.AddWithValue("@Estado",
+                string.IsNullOrWhiteSpace(estado) ? DBNull.Value : (object)estado);
+
+            cmd.Parameters.AddWithValue("@OrdenarPor", ordenarPor);
+            cmd.Parameters.AddWithValue("@Direccion", direccion);
 
             await using var reader = await cmd.ExecuteReaderAsync();
 
@@ -213,6 +228,81 @@ public class ProductoDA : IProductoDA
         {
             await _context.Database.CloseConnectionAsync();
         }
+    }
+
+    public async Task<List<Proveedor>> ListarProveedoresAsync()
+    {
+        var proveedores = new List<Proveedor>();
+
+        var conn = (SqlConnection)_context.Database.GetDbConnection();
+
+        await _context.Database.OpenConnectionAsync();
+
+        try
+        {
+            await using var cmd = new SqlCommand("SP_Proveedor_Listar", conn);
+
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            await using var reader = await cmd.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                proveedores.Add(new Proveedor
+                {
+                    ProveedorId = reader.GetInt32(
+                        reader.GetOrdinal("ProveedorId")),
+
+                    Nombre = reader.GetString(
+                        reader.GetOrdinal("Nombre"))
+                });
+            }
+        }
+        finally
+        {
+            await _context.Database.CloseConnectionAsync();
+        }
+
+        return proveedores;
+    }
+
+    public async Task<ResumenInventario> ObtenerResumenAsync()
+    {
+        var resumen = new ResumenInventario();
+
+        var conn = (SqlConnection)_context.Database.GetDbConnection();
+
+        await _context.Database.OpenConnectionAsync();
+
+        try
+        {
+            await using var cmd = new SqlCommand("SP_Producto_Resumen", conn);
+
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            await using var reader = await cmd.ExecuteReaderAsync();
+
+            if (await reader.ReadAsync())
+            {
+                resumen.ProductosActivos = reader.GetInt32(
+                    reader.GetOrdinal("ProductosActivos"));
+
+                resumen.StockBajo = reader.GetInt32(
+                    reader.GetOrdinal("StockBajo"));
+
+                resumen.Vacunas = reader.GetInt32(
+                    reader.GetOrdinal("Vacunas"));
+
+                resumen.Medicamentos = reader.GetInt32(
+                    reader.GetOrdinal("Medicamentos"));
+            }
+        }
+        finally
+        {
+            await _context.Database.CloseConnectionAsync();
+        }
+
+        return resumen;
     }
 
     private static void AgregarParametros(SqlCommand cmd, Producto producto)

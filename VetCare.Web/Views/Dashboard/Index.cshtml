@@ -1,0 +1,320 @@
+﻿@using System.Text.Json
+@using VetCare.Abstracciones.Modelos
+@model ResumenDashboard
+
+@{
+    ViewData["Title"] = "Dashboard";
+
+    var citasPorEstado =
+        ViewBag.CitasPorEstado as List<CitasPorEstado>
+        ?? new List<CitasPorEstado>();
+
+    var citasPorVeterinario =
+        ViewBag.CitasPorVeterinario as List<CitasPorVeterinario>
+        ?? new List<CitasPorVeterinario>();
+}
+
+<div class="vc-dashboard">
+
+    <div class="mb-4">
+        <h2 class="vc-dashboard-titulo">Dashboard</h2>
+        <p class="text-muted mb-0">
+            Resumen general de la clínica veterinaria
+        </p>
+    </div>
+
+    <!-- Indicadores -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="vc-dashboard-indicador">
+                <div class="vc-dashboard-icono">
+                    <i class="bi bi-calendar-check"></i>
+                </div>
+
+                <div>
+                    <div class="vc-dashboard-etiqueta">
+                        Citas de hoy
+                    </div>
+
+                    <div class="vc-dashboard-valor">
+                        @Model.CitasHoy
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="vc-dashboard-indicador">
+                <div class="vc-dashboard-icono">
+                    <i class="bi bi-calendar-month"></i>
+                </div>
+
+                <div>
+                    <div class="vc-dashboard-etiqueta">
+                        Citas del mes
+                    </div>
+
+                    <div class="vc-dashboard-valor">
+                        @Model.CitasMes
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="vc-dashboard-indicador">
+                <div class="vc-dashboard-icono">
+                    <i class="bi bi-heart-pulse"></i>
+                </div>
+
+                <div>
+                    <div class="vc-dashboard-etiqueta">
+                        Mascotas activas
+                    </div>
+
+                    <div class="vc-dashboard-valor">
+                        @Model.MascotasActivas
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="vc-dashboard-indicador">
+                <div class="vc-dashboard-icono">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+
+                <div>
+                    <div class="vc-dashboard-etiqueta">
+                        Productos con stock bajo
+                    </div>
+
+                    <div class="vc-dashboard-valor">
+                        @Model.ProductosStockBajo
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Gráficos -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-12 col-lg-6">
+            <div class="vc-dashboard-panel">
+
+                <h5>Citas por estado</h5>
+
+                <p class="text-muted small">
+                    Distribución de las citas registradas
+                </p>
+
+                @if (citasPorEstado.Any(c => c.Cantidad > 0))
+                {
+                    <div class="vc-dashboard-grafico">
+                        <canvas id="graficoEstados"
+                                role="img"
+                                aria-label="Gráfico de citas por estado">
+                        </canvas>
+                    </div>
+                }
+                else
+                {
+                    <div class="vc-dashboard-sin-datos">
+                        <i class="bi bi-calendar-x"></i>
+                        <p>No hay citas registradas.</p>
+                    </div>
+                }
+
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-6">
+            <div class="vc-dashboard-panel">
+
+                <h5>Citas por veterinario</h5>
+
+                <p class="text-muted small">
+                    Cantidad de citas asignadas por profesional
+                </p>
+
+                @if (citasPorVeterinario.Any(c => c.Cantidad > 0))
+                {
+                    <div class="vc-dashboard-grafico">
+                        <canvas id="graficoVeterinarios"
+                                role="img"
+                                aria-label="Gráfico de citas por veterinario">
+                        </canvas>
+                    </div>
+                }
+                else
+                {
+                    <div class="vc-dashboard-sin-datos">
+                        <i class="bi bi-bar-chart"></i>
+                        <p>No hay citas asignadas.</p>
+                    </div>
+                }
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Accesos rápidos -->
+    <div class="vc-dashboard-panel">
+
+        <h5 class="mb-3">Accesos rápidos</h5>
+
+        <div class="row g-3">
+
+            <div class="col-12 col-md-4">
+                <a asp-controller="Clientes"
+                   asp-action="Index"
+                   class="vc-dashboard-acceso">
+
+                    <i class="bi bi-people"></i>
+                    <span>Clientes</span>
+                    <i class="bi bi-chevron-right ms-auto"></i>
+
+                </a>
+            </div>
+
+            <div class="col-12 col-md-4">
+                <a asp-controller="Mascotas"
+                   asp-action="Index"
+                   class="vc-dashboard-acceso">
+
+                    <i class="bi bi-heart-pulse"></i>
+                    <span>Mascotas</span>
+                    <i class="bi bi-chevron-right ms-auto"></i>
+
+                </a>
+            </div>
+
+            <div class="col-12 col-md-4">
+                <a asp-controller="Productos"
+                   asp-action="Index"
+                   class="vc-dashboard-acceso">
+
+                    <i class="bi bi-box-seam"></i>
+                    <span>Inventario</span>
+                    <i class="bi bi-chevron-right ms-auto"></i>
+
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
+
+    <script>
+
+        const estados = @Html.Raw(JsonSerializer.Serialize(
+                    citasPorEstado.Select(c => c.Estado)));
+
+        const cantidadesEstados = @Html.Raw(JsonSerializer.Serialize(
+                    citasPorEstado.Select(c => c.Cantidad)));
+
+        const veterinarios = @Html.Raw(JsonSerializer.Serialize(
+                    citasPorVeterinario.Select(c => c.Veterinario)));
+
+        const cantidadesVeterinarios = @Html.Raw(JsonSerializer.Serialize(
+                    citasPorVeterinario.Select(c => c.Cantidad)));
+
+        const graficoEstados =
+            document.getElementById('graficoEstados');
+
+        const graficoVeterinarios =
+            document.getElementById('graficoVeterinarios');
+
+        const coloresEstados = {
+            'Programada': '#4285D4',
+            'Atendida': '#36B37E',
+            'Cancelada': '#E57373'
+        };
+
+        if (graficoEstados && typeof Chart !== 'undefined') {
+
+            new Chart(graficoEstados, {
+                type: 'doughnut',
+
+                data: {
+                    labels: estados,
+
+                    datasets: [{
+                        data: cantidadesEstados,
+
+                        backgroundColor: estados.map(
+                            estado => coloresEstados[estado] || '#9CA3AF'
+                        ),
+
+                        borderWidth: 2,
+                        borderColor: '#FFFFFF'
+                    }]
+                },
+
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        if (graficoVeterinarios && typeof Chart !== 'undefined') {
+
+            new Chart(graficoVeterinarios, {
+                type: 'bar',
+
+                data: {
+                    labels: veterinarios,
+
+                    datasets: [{
+                        label: 'Cantidad de citas',
+                        data: cantidadesVeterinarios,
+                        backgroundColor: '#4285D4',
+                        borderRadius: 6,
+                        maxBarThickness: 55
+                    }]
+                },
+
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+    </script>
+}
