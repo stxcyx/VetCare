@@ -33,6 +33,7 @@ var apiUrl = builder.Configuration["ApiUrl"]
 builder.Services.AddHttpClient<ClienteProxy>(c => c.BaseAddress = new Uri(apiUrl));
 builder.Services.AddHttpClient<MascotaProxy>(c => c.BaseAddress = new Uri(apiUrl));
 builder.Services.AddHttpClient<VeterinarioProxy>(c => c.BaseAddress = new Uri(apiUrl));
+builder.Services.AddHttpClient<CitaProxy>(c => c.BaseAddress = new Uri(apiUrl));
 
 // HU-03: todas las páginas exigen sesión y uno de los tres roles
 builder.Services.AddControllersWithViews(options =>

@@ -1,0 +1,35 @@
+@model Cita
+@{
+    ViewData["Title"] = "Reprogramar cita";
+}
+
+<h1>Reprogramar cita</h1>
+<hr />
+
+<dl class="row">
+    <dt class="col-sm-3">Mascota</dt>
+    <dd class="col-sm-9">@Model.Mascota?.Nombre</dd>
+
+    <dt class="col-sm-3">Veterinario</dt>
+    <dd class="col-sm-9">@Model.Veterinario?.Nombre</dd>
+
+    <dt class="col-sm-3">Motivo</dt>
+    <dd class="col-sm-9">@Model.Motivo</dd>
+</dl>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Reprogramar" asp-route-id="@Model.CitaId">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="FechaHora" class="form-label">Nueva fecha y hora</label>
+                <input asp-for="FechaHora" type="datetime-local" class="form-control" />
+                <span asp-validation-for="FechaHora" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a asp-action="Index" class="btn btn-secondary">Volver</a>
+        </form>
+    </div>
+</div>

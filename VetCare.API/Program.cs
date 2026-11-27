@@ -29,6 +29,9 @@ builder.Services.AddScoped<IMascotaFlujo, MascotaFlujo>();
 builder.Services.AddScoped<IVeterinarioDA, VeterinarioDA>();
 builder.Services.AddScoped<IVeterinarioReglas, VeterinarioReglas>();
 builder.Services.AddScoped<IVeterinarioFlujo, VeterinarioFlujo>();
+builder.Services.AddScoped<ICitaDA, CitaDA>();
+builder.Services.AddScoped<ICitaReglas, CitaReglas>();
+builder.Services.AddScoped<ICitaFlujo, CitaFlujo>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
