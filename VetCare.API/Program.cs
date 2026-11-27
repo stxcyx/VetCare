@@ -39,6 +39,9 @@ builder.Services.AddScoped<IProductoFlujo, ProductoFlujo>();
 builder.Services.AddScoped<IVeterinarioDA, VeterinarioDA>();
 builder.Services.AddScoped<IVeterinarioReglas, VeterinarioReglas>();
 builder.Services.AddScoped<IVeterinarioFlujo, VeterinarioFlujo>();
+builder.Services.AddScoped<ICitaDA, CitaDA>();
+builder.Services.AddScoped<ICitaReglas, CitaReglas>();
+builder.Services.AddScoped<ICitaFlujo, CitaFlujo>();
 
 builder.Services.AddScoped<IDashboardDA, DashboardDA>();
 builder.Services.AddScoped<IDashboardFlujo, DashboardFlujo>();

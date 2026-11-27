@@ -44,6 +44,9 @@ builder.Services.AddHttpClient<MascotaProxy>(
 builder.Services.AddHttpClient<VeterinarioProxy>(
     c => c.BaseAddress = new Uri(apiUrl));
 
+builder.Services.AddHttpClient<CitaProxy>(
+    c => c.BaseAddress = new Uri(apiUrl));
+
 builder.Services.AddHttpClient<IProductoProxy, ProductoProxy>(
     c => c.BaseAddress = new Uri(apiUrl));
 
