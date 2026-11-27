@@ -47,6 +47,12 @@ public class LoginModel : PageModel
 
         if (resultado.Succeeded) return LocalRedirect(returnUrl);
 
+        if (resultado.IsLockedOut)
+        {
+            MensajeError = "Su cuenta está desactivada. Contacte al administrador";
+            return Page();
+        }
+
         // HU-01 CA-02: mensaje genérico, sin decir qué dato falló
         MensajeError = "Correo o contraseña incorrectos";
         return Page();

@@ -43,6 +43,10 @@ builder.Services.AddScoped<ICitaDA, CitaDA>();
 builder.Services.AddScoped<ICitaReglas, CitaReglas>();
 builder.Services.AddScoped<ICitaFlujo, CitaFlujo>();
 
+builder.Services.AddScoped<IUsuarioDA, UsuarioDA>();
+builder.Services.AddScoped<IUsuarioReglas, UsuarioReglas>();
+builder.Services.AddScoped<IUsuarioFlujo, UsuarioFlujo>();
+
 builder.Services.AddScoped<IDashboardDA, DashboardDA>();
 builder.Services.AddScoped<IDashboardFlujo, DashboardFlujo>();
 

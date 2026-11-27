@@ -1,0 +1,79 @@
+@using System.Security.Claims
+@using VetCare.Abstracciones.Modelos
+@model IEnumerable<UsuarioCuenta>
+@{
+    ViewData["Title"] = "Usuarios y roles";
+    var miId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+}
+
+<div class="vc-encabezado">
+    <div>
+        <p class="vc-ruta">Administración / Usuarios y roles</p>
+        <h1>Usuarios y roles</h1>
+        <p class="vc-subtitulo">Cuentas con acceso al sistema y el rol que tiene cada una</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nuevo usuario</a>
+</div>
+
+<div class="vc-tabla-card">
+    <form asp-action="Index" method="get" class="vc-filtros">
+        <select name="rol" asp-items="ViewBag.Roles" class="form-select" style="max-width: 280px;">
+            <option value="">Todos los roles</option>
+        </select>
+        <button type="submit" class="vc-filtro-boton">Filtrar</button>
+    </form>
+
+    @if (!Model.Any())
+    {
+        <p class="vc-vacio">No se encontraron usuarios</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table vc-tabla mb-0">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var u in Model)
+                    {
+                        <tr>
+                            <td>@u.NombreCompleto @(u.Id == miId ? "(usted)" : "")</td>
+                            <td>@u.Email</td>
+                            <td><span class="badge text-bg-primary">@u.Rol</span></td>
+                            <td>
+                                @if (u.Activo)
+                                {
+                                    <span class="badge text-bg-success">Activo</span>
+                                }
+                                else
+                                {
+                                    <span class="badge text-bg-secondary">Inactivo</span>
+                                }
+                            </td>
+                            <td class="text-center text-nowrap">
+                                @if (u.Id != miId)
+                                {
+                                    <a asp-action="CambiarRol" asp-route-id="@u.Id" class="vc-pill vc-pill-editar">Cambiar rol</a>
+                                    <form asp-action="CambiarEstado" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@u.Id" />
+                                        <input type="hidden" name="activo" value="@((!u.Activo).ToString().ToLower())" />
+                                        <button type="submit" class="vc-pill @(u.Activo ? "vc-pill-eliminar" : "vc-pill-ver") border-0">
+                                            @(u.Activo ? "Desactivar" : "Activar")
+                                        </button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
