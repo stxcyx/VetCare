@@ -1,0 +1,48 @@
+@model Veterinario
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<div class="mb-3">
+    <label asp-for="UsuarioId" class="form-label">Cuenta de usuario</label>
+    <select asp-for="UsuarioId" asp-items="ViewBag.Usuarios" class="form-select">
+        <option value="">-- Seleccione la cuenta --</option>
+    </select>
+    <span asp-validation-for="UsuarioId" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="Nombre" class="form-label">Nombre</label>
+    <input asp-for="Nombre" class="form-control" />
+    <span asp-validation-for="Nombre" class="text-danger"></span>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="CodigoColegiado" class="form-label">Código de colegiado</label>
+        <input asp-for="CodigoColegiado" class="form-control" />
+        <span asp-validation-for="CodigoColegiado" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="Especialidad" class="form-label">Especialidad</label>
+        <input asp-for="Especialidad" class="form-control" />
+        <span asp-validation-for="Especialidad" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <label asp-for="Telefono" class="form-label">Teléfono</label>
+        <input asp-for="Telefono" class="form-control" />
+        <span asp-validation-for="Telefono" class="text-danger"></span>
+    </div>
+    <div class="col-md-4 mb-3">
+        <label asp-for="HoraInicio" class="form-label">Hora de inicio</label>
+        <input asp-for="HoraInicio" type="time" class="form-control" />
+        <span asp-validation-for="HoraInicio" class="text-danger"></span>
+    </div>
+    <div class="col-md-4 mb-3">
+        <label asp-for="HoraFin" class="form-label">Hora de fin</label>
+        <input asp-for="HoraFin" type="time" class="form-control" />
+        <span asp-validation-for="HoraFin" class="text-danger"></span>
+    </div>
+</div>

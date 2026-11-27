@@ -1,0 +1,39 @@
+@model Cita
+@{
+    ViewData["Title"] = "Cancelar cita";
+}
+
+<h1>Cancelar cita</h1>
+<h4 class="text-danger">¿Seguro que deseas cancelar esta cita?</h4>
+<hr />
+
+<dl class="row">
+    <dt class="col-sm-3">Fecha y hora</dt>
+    <dd class="col-sm-9">@Model.FechaHora.ToString("dd/MM/yyyy HH:mm")</dd>
+
+    <dt class="col-sm-3">Mascota</dt>
+    <dd class="col-sm-9">@Model.Mascota?.Nombre</dd>
+
+    <dt class="col-sm-3">Veterinario</dt>
+    <dd class="col-sm-9">@Model.Veterinario?.Nombre</dd>
+
+    <dt class="col-sm-3">Motivo</dt>
+    <dd class="col-sm-9">@Model.Motivo</dd>
+</dl>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Cancelar" asp-route-id="@Model.CitaId">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="MotivoCancelacion" class="form-label">Motivo de la cancelación</label>
+                <input asp-for="MotivoCancelacion" class="form-control" />
+                <span asp-validation-for="MotivoCancelacion" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-danger">Cancelar cita</button>
+            <a asp-action="Details" asp-route-id="@Model.CitaId" class="btn btn-secondary">Volver</a>
+        </form>
+    </div>
+</div>

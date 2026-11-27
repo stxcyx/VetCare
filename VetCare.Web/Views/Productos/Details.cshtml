@@ -1,0 +1,159 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model Producto
+
+@{
+    ViewData["Title"] = "Detalles del producto";
+}
+
+<div class="vc-encabezado">
+    <div>
+        <p class="vc-ruta">
+            Gestión clínica / Inventario / Detalles
+        </p>
+
+        <h1>Detalles del producto</h1>
+
+        <p class="vc-subtitulo">
+            Consulte la información del producto registrado
+        </p>
+    </div>
+
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Volver
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm">
+
+    <div class="card-body p-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <h5 class="fw-bold mb-0">
+                Información del producto
+            </h5>
+
+            @if (!Model.Activo)
+            {
+                <span class="vc-stock-inactivo">
+                    Inactivo
+                </span>
+            }
+            else if (Model.BajoStock)
+            {
+                <span class="vc-stock-bajo">
+                    Stock bajo
+                </span>
+            }
+            else
+            {
+                <span class="vc-stock-disponible">
+                    Disponible
+                </span>
+            }
+
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-6">
+                <label class="fw-bold text-secondary">
+                    ID del producto
+                </label>
+                <p class="mb-0">
+                    @Model.ProductoId
+                </p>
+            </div>
+
+            <div class="col-md-6">
+                <label class="fw-bold text-secondary">
+                    Nombre del producto
+                </label>
+                <p class="mb-0">
+                    @Model.Nombre
+                </p>
+            </div>
+
+            <div class="col-md-6">
+                <label class="fw-bold text-secondary">
+                    Categoría
+                </label>
+                <p class="mb-0">
+                    @Model.Categoria
+                </p>
+            </div>
+
+            <div class="col-md-6">
+                <label class="fw-bold text-secondary">
+                    Proveedor
+                </label>
+                <p class="mb-0">
+                    @(Model.Proveedor?.Nombre ?? "No disponible")
+                </p>
+            </div>
+
+            <div class="col-md-6">
+                <label class="fw-bold text-secondary">
+                    Precio
+                </label>
+                <p class="mb-0">
+                    ₡@Model.Precio.ToString("N2")
+                </p>
+            </div>
+
+            <div class="col-md-6">
+                <label class="fw-bold text-secondary">
+                    Stock actual
+                </label>
+                <p class="mb-0">
+                    @Model.Stock unidades
+                </p>
+            </div>
+
+            <div class="col-md-6">
+                <label class="fw-bold text-secondary">
+                    Stock mínimo
+                </label>
+                <p class="mb-0">
+                    @Model.StockMinimo unidades
+                </p>
+            </div>
+
+            <div class="col-md-6">
+                <label class="fw-bold text-secondary">
+                    Fecha de vencimiento
+                </label>
+                <p class="mb-0">
+                    @(Model.FechaVencimiento?.ToString("dd/MM/yyyy")
+                        ?? "No aplica")
+                </p>
+            </div>
+
+        </div>
+
+        <hr class="my-4" />
+
+        <div class="d-flex justify-content-end gap-2 flex-wrap">
+
+            <a asp-action="Index"
+               class="btn btn-outline-secondary">
+                Volver al inventario
+            </a>
+
+            <a asp-action="Edit"
+               asp-route-id="@Model.ProductoId"
+               class="btn btn-primary">
+
+                <i class="bi bi-pencil-square"></i> Editar producto
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,577 @@
+﻿@using VetCare.Abstracciones.Modelos
+
+@model RegistroAtencion
+
+@{
+    ViewData["Title"] = "Registrar atención";
+
+    var cita = (Cita)ViewBag.Cita;
+
+    var productos = ViewBag.Productos as List<Producto>
+        ?? new List<Producto>();
+}
+
+<div class="container-fluid py-4">
+
+    <!-- Encabezado -->
+
+    <div class="d-flex justify-content-between
+                align-items-center flex-wrap gap-3 mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">
+                Registrar atención veterinaria
+            </h2>
+
+            <p class="text-muted mb-0">
+                Registro de diagnóstico, tratamiento y consumo de productos.
+            </p>
+        </div>
+
+        <a asp-action="Index"
+           class="btn btn-outline-secondary">
+
+            <i class="bi bi-arrow-left me-1"></i>
+            Volver
+
+        </a>
+
+    </div>
+
+    <!-- Información de la cita -->
+
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-header text-white py-3"
+             style="background-color: #194B85;">
+
+            <h6 class="fw-bold mb-0">
+                <i class="bi bi-calendar-event me-2"></i>
+                Información de la cita
+            </h6>
+
+        </div>
+
+        <div class="card-body p-4">
+
+            <div class="row g-4">
+
+                <div class="col-12 col-md-3">
+
+                    <small class="text-muted">
+                        Número de cita
+                    </small>
+
+                    <p class="fw-bold mb-0">
+                        #@cita.CitaId
+                    </p>
+
+                </div>
+
+                <div class="col-12 col-md-3">
+
+                    <small class="text-muted">
+                        Fecha y hora
+                    </small>
+
+                    <p class="fw-bold mb-0">
+                        @cita.FechaHora.ToString("dd/MM/yyyy HH:mm")
+                    </p>
+
+                </div>
+
+                <div class="col-12 col-md-3">
+
+                    <small class="text-muted">
+                        Mascota
+                    </small>
+
+                    <p class="fw-bold mb-0">
+                        @cita.NombreMascota
+                    </p>
+
+                </div>
+
+                <div class="col-12 col-md-3">
+
+                    <small class="text-muted">
+                        Veterinario
+                    </small>
+
+                    <p class="fw-bold mb-0">
+                        @cita.NombreVeterinario
+                    </p>
+
+                </div>
+
+                <div class="col-12 col-md-6">
+
+                    <small class="text-muted">
+                        Motivo de la cita
+                    </small>
+
+                    <p class="fw-bold mb-0">
+                        @cita.Motivo
+                    </p>
+
+                </div>
+
+                <div class="col-12 col-md-6">
+
+                    <small class="text-muted">
+                        Estado
+                    </small>
+
+                    <p class="mb-0">
+
+                        <span class="badge bg-primary">
+                            Programada
+                        </span>
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Formulario -->
+
+    <form asp-action="Registrar"
+          asp-route-id="@cita.CitaId"
+          method="post"
+          asp-antiforgery="true">
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div asp-validation-summary="All"
+                 class="alert alert-danger">
+            </div>
+        }
+
+        <!-- Información clínica -->
+
+        <div class="card border-0 shadow-sm mb-4">
+
+            <div class="card-header text-white py-3"
+                 style="background-color: #194B85;">
+
+                <h6 class="fw-bold mb-0">
+                    <i class="bi bi-clipboard2-pulse me-2"></i>
+                    Información clínica
+                </h6>
+
+            </div>
+
+            <div class="card-body p-4">
+
+                <div class="row g-3">
+
+                    <div class="col-12 col-md-6">
+
+                        <label asp-for="Diagnostico"
+                               class="form-label fw-bold">
+                            Diagnóstico
+                        </label>
+
+                        <textarea asp-for="Diagnostico"
+                                  class="form-control"
+                                  rows="5"
+                                  placeholder="Ingrese el diagnóstico de la mascota">
+                        </textarea>
+
+                        <span asp-validation-for="Diagnostico"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="col-12 col-md-6">
+
+                        <label asp-for="Tratamiento"
+                               class="form-label fw-bold">
+                            Tratamiento
+                        </label>
+
+                        <textarea asp-for="Tratamiento"
+                                  class="form-control"
+                                  rows="5"
+                                  placeholder="Ingrese el tratamiento indicado">
+                        </textarea>
+
+                        <span asp-validation-for="Tratamiento"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Productos utilizados -->
+
+        <div class="card border-0 shadow-sm mb-4">
+
+            <div class="card-header text-white py-3
+                        d-flex justify-content-between
+                        align-items-center flex-wrap gap-2"
+                 style="background-color: #194B85;">
+
+                <h6 class="fw-bold mb-0">
+                    <i class="bi bi-box-seam me-2"></i>
+                    Productos utilizados
+                </h6>
+
+                <button type="button"
+                        id="btnAgregarProducto"
+                        class="btn btn-light btn-sm">
+
+                    <i class="bi bi-plus-lg me-1"></i>
+                    Agregar producto
+
+                </button>
+
+            </div>
+
+            <div class="card-body p-4">
+
+                <p class="text-muted">
+
+                    Seleccione los productos utilizados durante
+                    la atención y las cantidades correspondientes.
+
+                </p>
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered
+                                  align-middle">
+
+                        <thead class="table-light">
+
+                            <tr>
+                                <th>Producto</th>
+                                <th>Stock disponible</th>
+                                <th>Cantidad utilizada</th>
+                                <th>Acciones</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="tablaProductos">
+
+                            @for (var i = 0; i < Model.Productos.Count; i++)
+                            {
+                                <tr class="fila-producto">
+
+                                    <td>
+
+                                        <select asp-for="Productos[i].ProductoId"
+                                                class="form-select producto-select">
+
+                                            <option value="">
+                                                Seleccione un producto
+                                            </option>
+
+                                            @foreach (var producto in productos)
+                                            {
+                                                <option value="@producto.ProductoId"
+                                                        data-stock="@producto.Stock">
+
+                                                    @producto.Nombre
+
+                                                </option>
+                                            }
+
+                                        </select>
+
+                                        <span asp-validation-for="Productos[i].ProductoId"
+                                              class="text-danger">
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <span class="badge bg-light text-dark stock-disponible">
+                                            0 unidades
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <input asp-for="Productos[i].Cantidad"
+                                               type="number"
+                                               min="1"
+                                               class="form-control cantidad-producto" />
+
+                                        <span asp-validation-for="Productos[i].Cantidad"
+                                              class="text-danger">
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <button type="button"
+                                                class="btn btn-outline-danger btn-sm btnEliminarProducto">
+
+                                            <i class="bi bi-trash"></i>
+                                            Eliminar
+
+                                        </button>
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <div id="mensajeSinProductos"
+                     class="text-center text-muted py-3">
+
+                    No se han agregado productos a la atención.
+
+                </div>
+
+                <div class="alert alert-info mb-0">
+
+                    <i class="bi bi-info-circle me-2"></i>
+
+                    Las cantidades utilizadas serán descontadas
+                    automáticamente del inventario al registrar
+                    la atención.
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Botones -->
+
+        <div class="d-flex justify-content-end gap-2 mb-4">
+
+            <a asp-action="Index"
+               class="btn btn-outline-secondary">
+
+                Cancelar
+
+            </a>
+
+            <button type="submit"
+                    class="btn btn-primary">
+
+                <i class="bi bi-check-circle me-1"></i>
+                Registrar atención
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+<!-- Plantilla de productos -->
+
+<template id="plantillaProducto">
+
+    <tr class="fila-producto">
+
+        <td>
+
+            <select class="form-select producto-select"
+                    required>
+
+                <option value="">
+                    Seleccione un producto
+                </option>
+
+                @foreach (var producto in productos)
+                {
+                    <option value="@producto.ProductoId"
+                            data-stock="@producto.Stock">
+
+                        @producto.Nombre
+
+                    </option>
+                }
+
+            </select>
+
+        </td>
+
+        <td>
+
+            <span class="badge bg-light text-dark stock-disponible">
+                0 unidades
+            </span>
+
+        </td>
+
+        <td>
+
+            <input type="number"
+                   min="1"
+                   value="1"
+                   class="form-control cantidad-producto"
+                   required />
+
+        </td>
+
+        <td>
+
+            <button type="button"
+                    class="btn btn-outline-danger btn-sm btnEliminarProducto">
+
+                <i class="bi bi-trash"></i>
+                Eliminar
+
+            </button>
+
+        </td>
+
+    </tr>
+
+</template>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const tabla = document.getElementById("tablaProductos");
+
+            const plantilla = document.getElementById("plantillaProducto");
+
+            const botonAgregar = document.getElementById("btnAgregarProducto");
+
+            const mensaje = document.getElementById("mensajeSinProductos");
+
+            function actualizarIndices() {
+
+                const filas = tabla.querySelectorAll(".fila-producto");
+
+                filas.forEach(function (fila, indice) {
+
+                    const producto = fila.querySelector(".producto-select");
+
+                    const cantidad = fila.querySelector(".cantidad-producto");
+
+                    producto.name = `Productos[${indice}].ProductoId`;
+
+                    producto.id = `Productos_${indice}__ProductoId`;
+
+                    cantidad.name = `Productos[${indice}].Cantidad`;
+
+                    cantidad.id = `Productos_${indice}__Cantidad`;
+
+                    const validaciones = fila.querySelectorAll(
+                        "[data-valmsg-for]"
+                    );
+
+                    validaciones.forEach(function (validacion) {
+
+                        const propiedad = validacion
+                            .getAttribute("data-valmsg-for")
+                            .split(".")
+                            .pop();
+
+                        validacion.setAttribute(
+                            "data-valmsg-for",
+                            `Productos[${indice}].${propiedad}`
+                        );
+
+                    });
+
+                });
+
+                mensaje.classList.toggle(
+                    "d-none",
+                    filas.length > 0
+                );
+
+            }
+
+            function actualizarStock(fila) {
+
+                const select = fila.querySelector(".producto-select");
+
+                const opcion = select.options[select.selectedIndex];
+
+                const stock = opcion?.dataset.stock ?? "0";
+
+                const indicador = fila.querySelector(".stock-disponible");
+
+                indicador.textContent = `${stock} unidades`;
+
+            }
+
+            botonAgregar.addEventListener("click", function () {
+
+                const nuevaFila = plantilla.content.cloneNode(true);
+
+                tabla.appendChild(nuevaFila);
+
+                actualizarIndices();
+
+            });
+
+            tabla.addEventListener("change", function (evento) {
+
+                if (evento.target.classList.contains("producto-select")) {
+
+                    actualizarStock(
+                        evento.target.closest(".fila-producto")
+                    );
+
+                }
+
+            });
+
+            tabla.addEventListener("click", function (evento) {
+
+                const boton = evento.target.closest(
+                    ".btnEliminarProducto"
+                );
+
+                if (boton) {
+
+                    boton.closest(".fila-producto").remove();
+
+                    actualizarIndices();
+
+                }
+
+            });
+
+            tabla.querySelectorAll(".fila-producto")
+                .forEach(function (fila) {
+
+                    actualizarStock(fila);
+
+                });
+
+            actualizarIndices();
+
+        });
+
+    </script>
+
+}

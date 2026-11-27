@@ -1,0 +1,63 @@
+@model Cita
+@{
+    ViewData["Title"] = "Detalle de la cita";
+    bool puedeGestionar = User.IsInRole("Administrador") || User.IsInRole("Recepcionista");
+}
+
+<h1>
+    Detalle de la cita
+    @switch (Model.Estado)
+    {
+        case EstadoCita.Programada:
+            <span class="badge text-bg-primary fs-6">Programada</span>
+            break;
+        case EstadoCita.Atendida:
+            <span class="badge text-bg-success fs-6">Atendida</span>
+            break;
+        default:
+            <span class="badge text-bg-secondary fs-6">Cancelada</span>
+            break;
+    }
+</h1>
+<hr />
+
+<dl class="row">
+    <dt class="col-sm-3">Fecha y hora</dt>
+    <dd class="col-sm-9">@Model.FechaHora.ToString("dd/MM/yyyy HH:mm") (@Model.DuracionMin min)</dd>
+
+    <dt class="col-sm-3">Mascota</dt>
+    <dd class="col-sm-9">
+        <a asp-controller="Mascotas" asp-action="Details" asp-route-id="@Model.MascotaId">@Model.Mascota?.Nombre</a>
+    </dd>
+
+    <dt class="col-sm-3">Dueño</dt>
+    <dd class="col-sm-9">@Model.Mascota?.Cliente?.Nombre @Model.Mascota?.Cliente?.Apellidos</dd>
+
+    <dt class="col-sm-3">Veterinario</dt>
+    <dd class="col-sm-9">@Model.Veterinario?.Nombre</dd>
+
+    <dt class="col-sm-3">Motivo</dt>
+    <dd class="col-sm-9">@Model.Motivo</dd>
+
+    @if (Model.Estado == EstadoCita.Cancelada)
+    {
+        <dt class="col-sm-3">Motivo de cancelación</dt>
+        <dd class="col-sm-9">@Model.MotivoCancelacion</dd>
+    }
+
+    @if (Model.Estado == EstadoCita.Atendida)
+    {
+        <dt class="col-sm-3">Diagnóstico</dt>
+        <dd class="col-sm-9">@Model.Diagnostico</dd>
+
+        <dt class="col-sm-3">Tratamiento</dt>
+        <dd class="col-sm-9">@Model.Tratamiento</dd>
+    }
+</dl>
+
+<a asp-action="Index" class="btn btn-secondary">Volver</a>
+@if (puedeGestionar && Model.Estado == EstadoCita.Programada)
+{
+    <a asp-action="Reprogramar" asp-route-id="@Model.CitaId" class="btn btn-primary">Reprogramar</a>
+    <a asp-action="Cancelar" asp-route-id="@Model.CitaId" class="btn btn-danger">Cancelar cita</a>
+}

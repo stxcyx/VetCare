@@ -1,0 +1,754 @@
+﻿@using VetCare.Abstracciones.Modelos
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using System.Text.Json
+
+@model List<ReporteCita>
+
+@{
+    ViewData["Title"] = "Reportes";
+
+    var filtro = ViewBag.Filtro as FiltroReporteCita
+        ?? new FiltroReporteCita();
+
+    var resumen = ViewBag.Resumen as ResumenReporteCitas
+        ?? new ResumenReporteCitas();
+
+    var veterinarios = ViewBag.Veterinarios as SelectList;
+
+    var fechaInicio = filtro.FechaInicio?.ToString("yyyy-MM-dd");
+    var fechaFin = filtro.FechaFin?.ToString("yyyy-MM-dd");
+}
+
+<div class="container-fluid py-4">
+
+    <!-- Encabezado -->
+
+    <div class="mb-4">
+
+        <h2 class="fw-bold mb-1">Reportes</h2>
+
+        <p class="text-muted mb-0">
+            Consulte, analice y exporte los reportes
+            de citas veterinarias.
+        </p>
+
+    </div>
+
+    <!-- Filtros -->
+
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-header text-white py-3"
+             style="background-color: #194B85;">
+
+            <h6 class="mb-0 fw-semibold">
+
+                <i class="bi bi-funnel me-2"></i>
+                Filtros de búsqueda
+
+            </h6>
+
+        </div>
+
+        <div class="card-body p-4">
+
+            <form asp-controller="Reportes"
+                  asp-action="Index"
+                  method="get">
+
+                <div asp-validation-summary="All"
+                     class="text-danger mb-3">
+                </div>
+
+                <div class="row g-3 align-items-end">
+
+                    <div class="col-12 col-md-4">
+
+                        <label for="FechaInicio"
+                               class="form-label fw-semibold">
+                            Fecha de inicio
+                        </label>
+
+                        <input type="date"
+                               id="FechaInicio"
+                               name="FechaInicio"
+                               value="@fechaInicio"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="col-12 col-md-4">
+
+                        <label for="FechaFin"
+                               class="form-label fw-semibold">
+                            Fecha de fin
+                        </label>
+
+                        <input type="date"
+                               id="FechaFin"
+                               name="FechaFin"
+                               value="@fechaFin"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="col-12 col-md-4">
+
+                        <label for="VeterinarioId"
+                               class="form-label fw-semibold">
+                            Veterinario
+                        </label>
+
+                        <select id="VeterinarioId"
+                                name="VeterinarioId"
+                                asp-items="veterinarios"
+                                class="form-select">
+
+                            <option value="">
+                                Todos los veterinarios
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <div class="d-flex flex-wrap gap-2">
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+
+                                <i class="bi bi-search me-1"></i>
+                                Filtrar
+
+                            </button>
+
+                            <a asp-controller="Reportes"
+                               asp-action="Index"
+                               class="btn btn-outline-secondary">
+
+                                <i class="bi bi-arrow-clockwise me-1"></i>
+                                Limpiar
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- Indicadores -->
+
+    <div class="row g-3 mb-4">
+
+        <!-- Total de citas -->
+
+        <div class="col-12 col-sm-6 col-xl-3">
+
+            <div class="card border-0 shadow-sm h-100"
+                 style="background-color: #EDE4F8;">
+
+                <div class="card-body d-flex
+                            align-items-center gap-3">
+
+                    <div class="fs-2"
+                         style="color: #7555A0;">
+
+                        <i class="bi bi-calendar2-week"></i>
+
+                    </div>
+
+                    <div>
+
+                        <small style="color: #604C7D;">
+                            Total de citas
+                        </small>
+
+                        <h3 class="fw-bold mb-0"
+                            style="color: #533B78;">
+
+                            @resumen.TotalCitas
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Programadas -->
+
+        <div class="col-12 col-sm-6 col-xl-3">
+
+            <div class="card border-0 shadow-sm h-100"
+                 style="background-color: #DBEAFE;">
+
+                <div class="card-body d-flex
+                            align-items-center gap-3">
+
+                    <div class="fs-2"
+                         style="color: #1D4ED8;">
+
+                        <i class="bi bi-calendar-event"></i>
+
+                    </div>
+
+                    <div>
+
+                        <small style="color: #1D4ED8;">
+                            Programadas
+                        </small>
+
+                        <h3 class="fw-bold mb-0"
+                            style="color: #1D4ED8;">
+
+                            @resumen.Programadas
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Atendidas -->
+
+        <div class="col-12 col-sm-6 col-xl-3">
+
+            <div class="card border-0 shadow-sm h-100"
+                 style="background-color: #DCFCE7;">
+
+                <div class="card-body d-flex
+                            align-items-center gap-3">
+
+                    <div class="fs-2"
+                         style="color: #15803D;">
+
+                        <i class="bi bi-calendar-check"></i>
+
+                    </div>
+
+                    <div>
+
+                        <small style="color: #15803D;">
+                            Atendidas
+                        </small>
+
+                        <h3 class="fw-bold mb-0"
+                            style="color: #15803D;">
+
+                            @resumen.Atendidas
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Canceladas -->
+
+        <div class="col-12 col-sm-6 col-xl-3">
+
+            <div class="card border-0 shadow-sm h-100"
+                 style="background-color: #FEE2E2;">
+
+                <div class="card-body d-flex
+                            align-items-center gap-3">
+
+                    <div class="fs-2"
+                         style="color: #B91C1C;">
+
+                        <i class="bi bi-calendar-x"></i>
+
+                    </div>
+
+                    <div>
+
+                        <small style="color: #B91C1C;">
+                            Canceladas
+                        </small>
+
+                        <h3 class="fw-bold mb-0"
+                            style="color: #B91C1C;">
+
+                            @resumen.Canceladas
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Gráficos -->
+
+    <div class="row g-4 mb-4">
+
+        <!-- Citas por estado -->
+
+        <div class="col-12 col-xl-6">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-header bg-white py-3">
+
+                    <h6 class="fw-bold mb-0">
+
+                        <i class="bi bi-pie-chart me-2"></i>
+                        Citas por estado
+
+                    </h6>
+
+                </div>
+
+                <div class="card-body">
+
+                    @if (resumen.TotalCitas > 0)
+                    {
+                        <div style="position: relative;
+                                    height: 280px;">
+
+                            <canvas id="graficoReporteEstado">
+                            </canvas>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center text-muted py-5">
+
+                            <i class="bi bi-pie-chart
+                                      fs-1 d-block mb-2">
+                            </i>
+
+                            No hay citas para mostrar.
+
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Citas por veterinario -->
+
+        <div class="col-12 col-xl-6">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-header bg-white py-3">
+
+                    <h6 class="fw-bold mb-0">
+
+                        <i class="bi bi-bar-chart me-2"></i>
+                        Citas por veterinario
+
+                    </h6>
+
+                </div>
+
+                <div class="card-body">
+
+                    @if (resumen.PorVeterinario.Any())
+                    {
+                        <div style="position: relative;
+                                    height: 280px;">
+
+                            <canvas id="graficoReporteVeterinario">
+                            </canvas>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center text-muted py-5">
+
+                            <i class="bi bi-bar-chart
+                                      fs-1 d-block mb-2">
+                            </i>
+
+                            No hay citas para mostrar.
+
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Resultados -->
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white p-3">
+
+            <div class="d-flex flex-wrap
+                        justify-content-between
+                        align-items-center gap-3">
+
+                <div>
+
+                    <h5 class="fw-bold mb-1">
+                        Detalle de citas
+                    </h5>
+
+                    <small class="text-muted">
+                        Resultados de los filtros seleccionados.
+                    </small>
+
+                </div>
+
+                @if (ViewData.ModelState.IsValid && Model.Any())
+                {
+                    <div class="d-flex flex-wrap gap-2">
+
+                        <a asp-controller="Reportes"
+                           asp-action="ExportarCsv"
+                           asp-route-FechaInicio="@fechaInicio"
+                           asp-route-FechaFin="@fechaFin"
+                           asp-route-VeterinarioId="@filtro.VeterinarioId"
+                           class="btn btn-outline-secondary">
+
+                            <i class="bi bi-filetype-csv me-1"></i>
+                            Exportar CSV
+
+                        </a>
+
+                        <a asp-controller="Reportes"
+                           asp-action="ExportarExcel"
+                           asp-route-FechaInicio="@fechaInicio"
+                           asp-route-FechaFin="@fechaFin"
+                           asp-route-VeterinarioId="@filtro.VeterinarioId"
+                           class="btn btn-success">
+
+                            <i class="bi bi-file-earmark-excel me-1"></i>
+                            Exportar Excel
+
+                        </a>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover
+                              align-middle mb-0">
+
+                    <thead class="table-light">
+
+                        <tr>
+                            <th class="ps-3">ID</th>
+                            <th>Fecha y hora</th>
+                            <th>Cliente</th>
+                            <th>Mascota</th>
+                            <th>Veterinario</th>
+                            <th>Motivo</th>
+                            <th>Estado</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @if (Model.Any())
+                        {
+                            @foreach (var cita in Model)
+                            {
+                                <tr>
+
+                                    <td class="ps-3">
+                                        @cita.CitaId
+                                    </td>
+
+                                    <td class="text-nowrap">
+                                        @cita.FechaHora.ToString("dd/MM/yyyy HH:mm")
+                                    </td>
+
+                                    <td>@cita.Cliente</td>
+
+                                    <td>@cita.Mascota</td>
+
+                                    <td>@cita.Veterinario</td>
+
+                                    <td>@cita.Motivo</td>
+
+                                    <td>
+
+                                        @switch (cita.Estado)
+                                        {
+                                            case "Programada":
+
+                                                <span class="badge bg-primary">
+                                                    Programada
+                                                </span>
+
+                                                break;
+
+                                            case "Atendida":
+
+                                                <span class="badge bg-success">
+                                                    Atendida
+                                                </span>
+
+                                                break;
+
+                                            case "Cancelada":
+
+                                                <span class="badge bg-danger">
+                                                    Cancelada
+                                                </span>
+
+                                                break;
+
+                                            default:
+
+                                                <span class="badge bg-secondary">
+                                                    @cita.Estado
+                                                </span>
+
+                                                break;
+                                        }
+
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+
+                                <td colspan="7"
+                                    class="text-center
+                                           text-muted py-5">
+
+                                    <i class="bi bi-clipboard-x
+                                              fs-1 d-block mb-2">
+                                    </i>
+
+                                    No se encontraron citas con los
+                                    filtros seleccionados.
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <div class="card-footer bg-white py-3">
+
+            <small class="text-muted">
+                Total de registros: @Model.Count
+            </small>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js">
+    </script>
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const estados = @Html.Raw(
+                JsonSerializer.Serialize(
+                    resumen.PorEstado.Select(c => c.Estado)));
+
+            const cantidadesEstado = @Html.Raw(
+                JsonSerializer.Serialize(
+                    resumen.PorEstado.Select(c => c.Cantidad)));
+
+            const veterinarios = @Html.Raw(
+                JsonSerializer.Serialize(
+                    resumen.PorVeterinario.Select(c => c.Veterinario)));
+
+            const cantidadesVeterinario = @Html.Raw(
+                JsonSerializer.Serialize(
+                    resumen.PorVeterinario.Select(c => c.Cantidad)));
+
+            const graficoEstado = document.getElementById(
+                "graficoReporteEstado");
+
+            if (graficoEstado) {
+
+                new Chart(graficoEstado, {
+
+                    type: "doughnut",
+
+                    data: {
+
+                        labels: estados,
+
+                        datasets: [{
+
+                            data: cantidadesEstado,
+
+                            backgroundColor: [
+                                "#2563EB",
+                                "#16A34A",
+                                "#DC2626"
+                            ],
+
+                            borderWidth: 3,
+                            borderColor: "#FFFFFF"
+
+                        }]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        cutout: "65%",
+
+                        plugins: {
+
+                            legend: {
+
+                                position: "bottom"
+
+                            }
+
+                        }
+
+                    }
+
+                });
+
+            }
+
+            const graficoVeterinario = document.getElementById(
+                "graficoReporteVeterinario");
+
+            if (graficoVeterinario) {
+
+                new Chart(graficoVeterinario, {
+
+                    type: "bar",
+
+                    data: {
+
+                        labels: veterinarios,
+
+                        datasets: [{
+
+                            label: "Cantidad de citas",
+
+                            data: cantidadesVeterinario,
+
+                            backgroundColor: "#7555A0",
+
+                            borderRadius: 6,
+
+                            maxBarThickness: 65
+
+                        }]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            legend: {
+
+                                display: false
+
+                            }
+
+                        },
+
+                        scales: {
+
+                            y: {
+
+                                beginAtZero: true,
+
+                                ticks: {
+
+                                    precision: 0
+
+                                }
+
+                            },
+
+                            x: {
+
+                                grid: {
+
+                                    display: false
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                });
+
+            }
+
+        });
+
+    </script>
+
+}

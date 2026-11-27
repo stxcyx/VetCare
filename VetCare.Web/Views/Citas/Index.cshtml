@@ -1,0 +1,107 @@
+@model IEnumerable<Cita>
+@{
+    ViewData["Title"] = "Citas";
+    bool puedeGestionar = User.IsInRole("Administrador") || User.IsInRole("Recepcionista");
+    bool esVeterinario = ViewBag.EsVeterinario;
+    bool todas = ViewBag.Todas;
+    string fechaTexto = ((DateTime?)ViewBag.Fecha)?.ToString("yyyy-MM-dd") ?? string.Empty;
+}
+
+<div class="vc-encabezado">
+    <div>
+        <p class="vc-ruta">Gestión clínica / Citas</p>
+        <h1>Agenda de citas</h1>
+        <p class="vc-subtitulo">
+            @(todas ? "Todas las fechas" : "Citas del " + ((DateTime?)ViewBag.Fecha)?.ToString("dd/MM/yyyy"))
+        </p>
+    </div>
+    @if (puedeGestionar)
+    {
+        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nueva cita</a>
+    }
+</div>
+
+<div class="vc-tabla-card">
+    <form asp-action="Index" method="get" class="vc-filtros">
+        <input type="date" name="fecha" value="@fechaTexto" class="form-control" style="max-width: 180px;" />
+
+        @if (!esVeterinario)
+        {
+            <select name="veterinarioId" asp-items="ViewBag.Veterinarios" class="form-select" style="max-width: 240px;">
+                <option value="">Todos los veterinarios</option>
+            </select>
+        }
+
+        <select name="estado" asp-items="ViewBag.Estados" class="form-select" style="max-width: 180px;">
+            <option value="">Todos los estados</option>
+        </select>
+
+        <button type="submit" class="vc-filtro-boton">Filtrar</button>
+
+        @if (todas)
+        {
+            <a asp-action="Index" class="btn btn-link">Ver solo hoy</a>
+        }
+        else
+        {
+            <a asp-action="Index" asp-route-todas="true" class="btn btn-link">Ver todas las fechas</a>
+        }
+    </form>
+
+    @if (!Model.Any())
+    {
+        <p class="vc-vacio">No se encontraron citas</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table vc-tabla mb-0">
+                <thead>
+                    <tr>
+                        <th>Fecha y hora</th>
+                        <th>Mascota</th>
+                        <th>Veterinario</th>
+                        <th>Motivo</th>
+                        <th>Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in Model)
+                    {
+                        <tr>
+                            <td>@c.FechaHora.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>
+                                <a asp-controller="Mascotas" asp-action="Details" asp-route-id="@c.MascotaId" class="vc-link-fila">@c.Mascota?.Nombre</a>
+                            </td>
+                            <td>@c.Veterinario?.Nombre</td>
+                            <td>@c.Motivo</td>
+                            <td>
+                                @switch (c.Estado)
+                                {
+                                    case EstadoCita.Programada:
+                                        <span class="badge text-bg-primary">Programada</span>
+                                        break;
+                                    case EstadoCita.Atendida:
+                                        <span class="badge text-bg-success">Atendida</span>
+                                        break;
+                                    default:
+                                        <span class="badge text-bg-secondary">Cancelada</span>
+                                        break;
+                                }
+                            </td>
+                            <td class="text-center text-nowrap">
+                                <a asp-action="Details" asp-route-id="@c.CitaId" class="vc-pill vc-pill-ver">Ver</a>
+                                @if (puedeGestionar && c.Estado == EstadoCita.Programada)
+                                {
+                                    <a asp-action="Reprogramar" asp-route-id="@c.CitaId" class="vc-pill vc-pill-editar">Reprogramar</a>
+                                    <a asp-action="Cancelar" asp-route-id="@c.CitaId" class="vc-pill vc-pill-eliminar">Cancelar</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

@@ -15,11 +15,14 @@ cultura.NumberFormat.NumberGroupSeparator = ",";
 CultureInfo.DefaultThreadCurrentCulture = cultura;
 CultureInfo.DefaultThreadCurrentUICulture = cultura;
 
-// La Web usa la base solo para Identity (inicio de sesión y roles).
-// Los datos de los módulos llegan por la API.
+// La Web usa la base solo para Identity.
 var cadena = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Falta la cadena de conexión 'DefaultConnection'.");
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(cadena));
+    ?? throw new InvalidOperationException(
+        "Falta la cadena de conexión 'DefaultConnection'.");
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(cadena));
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
@@ -27,11 +30,44 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// Clientes HTTP hacia la API (uno por módulo)
+// Clientes HTTP hacia la API
 var apiUrl = builder.Configuration["ApiUrl"]
-    ?? throw new InvalidOperationException("Falta 'ApiUrl' en appsettings.json.");
-builder.Services.AddHttpClient<ClienteProxy>(c => c.BaseAddress = new Uri(apiUrl));
-builder.Services.AddHttpClient<MascotaProxy>(c => c.BaseAddress = new Uri(apiUrl));
+    ?? throw new InvalidOperationException(
+        "Falta 'ApiUrl' en appsettings.json.");
+
+builder.Services.AddHttpClient<ClienteProxy>(
+    c => c.BaseAddress = new Uri(apiUrl));
+
+builder.Services.AddHttpClient<MascotaProxy>(
+    c => c.BaseAddress = new Uri(apiUrl));
+
+builder.Services.AddHttpClient<VeterinarioProxy>(
+    c => c.BaseAddress = new Uri(apiUrl));
+
+builder.Services.AddHttpClient<CitaProxy>(
+    c => c.BaseAddress = new Uri(apiUrl));
+
+builder.Services.AddHttpClient<UsuarioProxy>(
+    c => c.BaseAddress = new Uri(apiUrl));
+
+builder.Services.AddHttpClient<IProductoProxy, ProductoProxy>(
+    c => c.BaseAddress = new Uri(apiUrl));
+
+builder.Services.AddHttpClient<IDashboardProxy, DashboardProxy>(
+    c => c.BaseAddress = new Uri(apiUrl));
+
+builder.Services.AddHttpClient<IReporteProxy, ReporteProxy>(
+    c => c.BaseAddress = new Uri(apiUrl));
+
+builder.Services.AddHttpClient<IAtencionProxy, AtencionProxy>(
+    c => c.BaseAddress = new Uri(apiUrl));
+
+// Cliente para comprobar la disponibilidad del API
+builder.Services.AddHttpClient("ApiDisponibilidad", c =>
+{
+    c.BaseAddress = new Uri(apiUrl);
+    c.Timeout = TimeSpan.FromSeconds(3);
+});
 
 // HU-03: todas las páginas exigen sesión y uno de los tres roles
 builder.Services.AddControllersWithViews(options =>
@@ -61,6 +97,7 @@ app.UseStatusCodePagesWithReExecute("/Home/Estado/{0}");
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
@@ -71,6 +108,55 @@ app.MapControllerRoute(
     .WithStaticAssets();
 
 app.MapRazorPages()
-   .WithStaticAssets();
+    .WithStaticAssets();
+
+// Esperar automáticamente a que el API esté disponible
+if (app.Environment.IsDevelopment())
+{
+    var factory = app.Services
+        .GetRequiredService<IHttpClientFactory>();
+
+    using var http = factory.CreateClient("ApiDisponibilidad");
+
+    var apiDisponible = false;
+
+    for (var intento = 1; intento <= 30; intento++)
+    {
+        try
+        {
+            using var respuesta = await http.GetAsync("/health");
+
+            if (respuesta.IsSuccessStatusCode)
+            {
+                apiDisponible = true;
+
+                app.Logger.LogInformation(
+                    "El API de VetCare está disponible.");
+
+                break;
+            }
+        }
+        catch (HttpRequestException)
+        {
+            // El API todavía está iniciando.
+        }
+        catch (TaskCanceledException)
+        {
+            // El API todavía no responde.
+        }
+
+        app.Logger.LogInformation(
+            "Esperando el API de VetCare. Intento {Intento}/30",
+            intento);
+
+        await Task.Delay(1000);
+    }
+
+    if (!apiDisponible)
+    {
+        throw new InvalidOperationException(
+            "No se pudo establecer comunicación con el API de VetCare.");
+    }
+}
 
 app.Run();
