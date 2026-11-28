@@ -157,6 +157,20 @@ public class CitasController : Controller
         return RedirectToAction(nameof(Details), new { id });
     }
 
+    // HU-26: bloques libres para el formulario de cita (los consulta el script de la vista)
+    [Authorize(Roles = "Administrador,Recepcionista")]
+    public async Task<IActionResult> Disponibilidad(int veterinarioId, string? fecha)
+    {
+        if (!DateOnly.TryParseExact(fecha, "yyyy-MM-dd", out var dia))
+            return BadRequest(new { mensaje = "Seleccione una fecha válida" });
+
+        var resultado = await _api.ObtenerDisponibilidadAsync(veterinarioId, dia);
+        if (!resultado.EsExito)
+            return BadRequest(new { mensaje = resultado.Mensaje ?? "No se pudo consultar la disponibilidad" });
+
+        return Json(resultado.Datos);
+    }
+
     private async Task CargarListasAsync()
     {
         var mascotas = (await _api.ListarMascotasAsync())

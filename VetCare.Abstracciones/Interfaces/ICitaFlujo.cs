@@ -14,4 +14,5 @@ public interface ICitaFlujo
     Task<Resultado<Cita>> AgendarAsync(Cita cita);
     Task<Resultado<Cita>> ReprogramarAsync(int id, DateTime nuevaFechaHora);
     Task<Resultado<bool>> CancelarAsync(int id, string motivo);
+    Task<Resultado<List<BloqueHorario>>> ObtenerDisponibilidadAsync(int veterinarioId, DateOnly fecha);
 }

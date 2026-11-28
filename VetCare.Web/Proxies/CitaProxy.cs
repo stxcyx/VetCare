@@ -56,6 +56,23 @@ public class CitaProxy
         await LeerResultadoAsync(await _http.PutAsJsonAsync($"api/citas/{id}/cancelar",
             new CancelarCitaDto { Motivo = motivo }));
 
+    // HU-26: horarios libres de un veterinario en una fecha
+    public async Task<Resultado<List<BloqueHorario>>> ObtenerDisponibilidadAsync(int veterinarioId, DateOnly fecha)
+    {
+        var respuesta = await _http.GetAsync(
+            $"api/veterinarios/{veterinarioId}/disponibilidad?fecha={fecha:yyyy-MM-dd}");
+
+        if (respuesta.IsSuccessStatusCode)
+            return Resultado<List<BloqueHorario>>.Exito(
+                await respuesta.Content.ReadFromJsonAsync<List<BloqueHorario>>() ?? new List<BloqueHorario>());
+
+        var error = await respuesta.Content.ReadFromJsonAsync<ErrorRespuesta>()
+                    ?? new ErrorRespuesta { Mensaje = "Error" };
+        return respuesta.StatusCode == HttpStatusCode.NotFound
+            ? Resultado<List<BloqueHorario>>.NoEncontrado(error.Mensaje)
+            : Resultado<List<BloqueHorario>>.Conflicto(error.Mensaje, error.Campo);
+    }
+
     private static async Task<Resultado<bool>> LeerResultadoAsync(HttpResponseMessage respuesta)
     {
         if (respuesta.IsSuccessStatusCode) return Resultado<bool>.Exito(true);
