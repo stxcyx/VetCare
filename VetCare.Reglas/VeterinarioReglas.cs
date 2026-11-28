@@ -6,7 +6,7 @@ public class VeterinarioReglas : IVeterinarioReglas
 {
     public const string MsgCodigoDuplicado = "Ya existe un veterinario con este código";
     public const string MsgUsuarioDuplicado = "Esa cuenta de usuario ya está asignada a otro veterinario";
-    public const string MsgTieneCitas = "No se puede elimiar: el veterinario tiene citas programadas";
+    public const string MsgTieneCitas = "No se puede eliminar: el veterinario tiene citas programadas";
 
     private readonly IVeterinarioDA _da;
 

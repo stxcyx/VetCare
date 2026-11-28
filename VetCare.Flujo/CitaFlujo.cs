@@ -91,4 +91,33 @@ public class CitaFlujo : ICitaFlujo
         await _da.CancelarAsync(id, motivo);
         return Resultado<bool>.Exito(true);
     }
+
+    // HU-26: bloques libres de 30 minutos dentro del horario del veterinario
+    public async Task<Resultado<List<BloqueHorario>>> ObtenerDisponibilidadAsync(int veterinarioId, DateOnly fecha)
+    {
+        var veterinario = await _da.ObtenerVeterinarioAsync(veterinarioId);
+        if (veterinario is null)
+            return Resultado<List<BloqueHorario>>.NoEncontrado("Veterinario no encontrado");
+        if (!veterinario.Activo)
+            return Resultado<List<BloqueHorario>>.Conflicto("El veterinario no está activo");
+
+        var dia = fecha.ToDateTime(TimeOnly.MinValue);
+        var ocupadas = await _da.ListarAsync(dia, veterinarioId, EstadoCita.Programada);
+        var ahora = DateTime.Now;
+
+        var libres = new List<BloqueHorario>();
+        var inicio = dia + veterinario.HoraInicio;
+        var finJornada = dia + veterinario.HoraFin;
+
+        for (; inicio.AddMinutes(DuracionCitaMin) <= finJornada; inicio = inicio.AddMinutes(DuracionCitaMin))
+        {
+            var fin = inicio.AddMinutes(DuracionCitaMin);
+            if (inicio <= ahora) continue;   // RN-02: solo horas futuras
+            if (ocupadas.Any(c => c.FechaHora < fin && c.FechaHora.AddMinutes(c.DuracionMin) > inicio)) continue;   // RN-01
+
+            libres.Add(new BloqueHorario { Inicio = inicio.ToString("HH:mm"), Fin = fin.ToString("HH:mm") });
+        }
+
+        return Resultado<List<BloqueHorario>>.Exito(libres);
+    }
 }

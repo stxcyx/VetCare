@@ -28,6 +28,13 @@
             </div>
 
             <div class="mb-3">
+                <label for="fechaConsulta" class="form-label">Fecha para ver horarios libres</label>
+                <input id="fechaConsulta" type="date" class="form-control" style="max-width: 220px;" />
+                <div id="bloques" class="d-flex flex-wrap gap-2 mt-2"></div>
+                <div id="bloquesMensaje" class="form-text">Elija un veterinario y una fecha para ver los horarios libres.</div>
+            </div>
+
+            <div class="mb-3">
                 <label asp-for="FechaHora" class="form-label">Fecha y hora (cada cita dura 30 minutos)</label>
                 <input asp-for="FechaHora" type="datetime-local" class="form-control" />
                 <span asp-validation-for="FechaHora" class="text-danger"></span>
@@ -49,4 +56,43 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        (function () {
+            const vet = document.getElementById('VeterinarioId');
+            const fecha = document.getElementById('fechaConsulta');
+            const bloques = document.getElementById('bloques');
+            const mensaje = document.getElementById('bloquesMensaje');
+            const fechaHora = document.getElementById('FechaHora');
+            const url = '@Url.Action("Disponibilidad", "Citas")';
+
+            async function cargar() {
+                bloques.innerHTML = '';
+                if (!vet.value || vet.value === '0' || !fecha.value) {
+                    mensaje.textContent = 'Elija un veterinario y una fecha para ver los horarios libres.';
+                    return;
+                }
+                try {
+                    const r = await fetch(url + '?veterinarioId=' + encodeURIComponent(vet.value) +
+                                          '&fecha=' + encodeURIComponent(fecha.value));
+                    const datos = await r.json();
+                    if (!r.ok) { mensaje.textContent = datos.mensaje; return; }
+                    if (datos.length === 0) { mensaje.textContent = 'No hay horarios libres ese día.'; return; }
+                    mensaje.textContent = 'Pulse un horario para usarlo:';
+                    datos.forEach(b => {
+                        const boton = document.createElement('button');
+                        boton.type = 'button';
+                        boton.className = 'btn btn-outline-primary btn-sm';
+                        boton.textContent = b.inicio + ' – ' + b.fin;
+                        boton.addEventListener('click', () => { fechaHora.value = fecha.value + 'T' + b.inicio; });
+                        bloques.appendChild(boton);
+                    });
+                } catch {
+                    mensaje.textContent = 'No se pudo consultar la disponibilidad.';
+                }
+            }
+
+            vet.addEventListener('change', cargar);
+            fecha.addEventListener('change', cargar);
+        })();
+    </script>
 }
